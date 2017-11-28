@@ -154,6 +154,7 @@ static void _SetPixelIndex(GUI_DEVICE * pDevice, int x, int y, int PixelIndex) {
     GUI_USE_PARA(y);
     GUI_USE_PARA(PixelIndex);
     {
+       asm("nop");
       //
       // Write into hardware ... Adapt to your system
       //
@@ -199,6 +200,7 @@ static unsigned int _GetPixelIndex(GUI_DEVICE * pDevice, int x, int y) {
       // TBD by customer...
       //
       PixelIndex = 0;
+       asm("nop");
     }
     #if (LCD_MIRROR_X == 0) && (LCD_MIRROR_Y == 0) && (LCD_SWAP_XY == 0)
       #undef xPhys
