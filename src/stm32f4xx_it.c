@@ -37,6 +37,57 @@ void SysTick_Handler(void)
 	HAL_IncTick();
 	HAL_SYSTICK_IRQHandler();
 #ifdef USE_RTOS_SYSTICK
-	osSystickHandler();
+	//osSystickHandler();
 #endif
 }
+
+void NMI_Handler()
+{
+	while(1){
+		asm("nop");
+	}
+}
+
+void HardFault_Handler()
+{
+	//while(1){
+		asm("nop");
+	//};
+}
+
+void MemManage_Handler()
+{
+	while(1){
+		asm("nop");
+	}
+}
+
+void UsageFault_Handler()
+{
+	while(1){
+		asm("nop");
+	}
+}
+
+
+//void SVC_Handler()
+//{
+//	while(1){
+//		asm("nop");
+//	}
+//}
+
+void DebugMon_Handler()
+{
+	while(1){
+		asm("nop");
+	}
+}
+
+//void PendSV_Handler()
+//{
+//	while(1){
+//		asm("nop");
+//	}
+//}
+
