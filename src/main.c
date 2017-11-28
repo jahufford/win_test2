@@ -34,18 +34,23 @@ int main(void)
     	tickstart = HAL_GetTick();
     }
     asm("nop");
-    GUI_Init();
+    volatile int ret;
+    ret = GUI_Init();
     asm("nop");
     volatile int x = GUI_IsInitialized();
+    GUI_Clear();
+    asm("nop");
     //GUI_FillRect(20,20,280,150);
     GUI_SetBkColor(GUI_DARKRED);
-    GUI_FillRect(20,20,80,120);
     GUI_SetColor(GUI_RED);
-    GUI_SetBkColorIndex(1);
-	GUI_SetColorIndex(2);
-    GUI_Clear();
+    GUI_FillRect(20,20,80,120);
+    //GUI_SetColor(GUI_RED);
+    //GUI_SetBkColorIndex(1);
+	//GUI_SetColorIndex(2);
+    //GUI_Clear();
     //GUI_SetFont(&GUI_Font20_1);
-    GUI_DispStringAt("Hello world!", (LCD_GetXSize()-100)/2, (LCD_GetYSize()-20)/2);
+    GUI_SetFont(&GUI_Font32B_1);
+    GUI_DispStringAt("Hi", (LCD_GetXSize()-100)/2, (LCD_GetYSize()-20)/2);
 	for(;;);
 }
 
