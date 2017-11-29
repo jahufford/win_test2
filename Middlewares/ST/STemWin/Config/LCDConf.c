@@ -126,6 +126,7 @@ void LCD_Module_Init();
 //
 #define COLOR_CONVERSION GUICC_565
 //#define COLOR_CONVERSION GUICC_M565
+//#define COLOR_CONVERSION GUICC_565
 
 //
 // Display driver
@@ -165,11 +166,21 @@ static void LcdWriteReg(U16 Data) {
 */
 static void LcdWriteData(U16 Data) {
   // ... TBD by user
+	uint8_t *p = (uint8_t*)&Data;
 	LCD_CS_LOW();
 	LCD_DC_HIGH();
-	if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)&Data, 1,0xFFFF) != HAL_OK){
-		Error_Handler();
-    }
+	if(Data&0xFF00){
+      if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p+1), 1,0xFFFF) != HAL_OK){
+        Error_Handler();
+      }
+      if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p), 1,0xFFFF) != HAL_OK){
+        Error_Handler();
+      }
+	}else{
+      if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)&Data, 1,0xFFFF) != HAL_OK){
+        Error_Handler();
+      }
+	}
 	LCD_CS_HIGH();
 }
 static void LcdWriteByte(uint8_t Data) {
@@ -189,12 +200,16 @@ static void LcdWriteByte(uint8_t Data) {
 *   Writes multiple values to a display register.
 */
 static void LcdWriteDataMultiple(U16 * pData, int NumItems) {
+	uint8_t *p = (uint8_t*)pData;
   LCD_CS_LOW();
   LCD_DC_HIGH();
   while (NumItems--) {
     // ... TBD by user
 
-	if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)pData, 2,0xFFFF) != HAL_OK){
+	if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p+1), 1,0xFFFF) != HAL_OK){
+		//Error_Handler();
+    }
+	if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p), 1,0xFFFF) != HAL_OK){
 		//Error_Handler();
     }
 	pData++;
@@ -237,8 +252,10 @@ void LCD_X_Config(void) {
   //
   // Set display driver and color conversion
   //
-  pDevice = GUI_DEVICE_CreateAndLink(GUIDRV_FLEXCOLOR, GUICC_565, 0, 0);
+  //pDevice = GUI_DEVICE_CreateAndLink(GUIDRV_FLEXCOLOR, GUICC_565, 0, 0);
   //pDevice = GUI_DEVICE_CreateAndLink(GUIDRV_FLEXCOLOR, GUICC_M565, 0, 0);
+  pDevice = GUI_DEVICE_CreateAndLink(GUIDRV_FLEXCOLOR, COLOR_CONVERSION, 0, 0);
+
   //
   // Display driver configuration, required for Lin-driver
   //
@@ -249,6 +266,7 @@ void LCD_X_Config(void) {
   //
   //Config.Orientation = GUI_SWAP_XY | GUI_MIRROR_Y;
   Config.Orientation = GUI_SWAP_XY;
+
   GUIDRV_FlexColor_Config(pDevice, &Config);
   //
   // Set controller and operation mode
@@ -257,6 +275,7 @@ void LCD_X_Config(void) {
   PortAPI.pfWrite16_A1  = LcdWriteData;
   PortAPI.pfWriteM16_A1 = LcdWriteDataMultiple;
   PortAPI.pfReadM16_A1  = LcdReadDataMultiple;
+
   //GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66708, GUIDRV_FLEXCOLOR_M16C0B16);
   GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66709, GUIDRV_FLEXCOLOR_M16C0B16);
   //GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66709, GUIDRV_FLEXCOLOR_M16C1B8);
@@ -467,11 +486,19 @@ void LCD_Module_Init()
     LcdWriteByte(0x28); // row/column exchange, I'm using the module in a
     					 // horizontal orientation, with the top left corner
     					 // being x=0 y=0
-
+    //LcdWriteByte(0x20);
     //LcdWriteData(0x3C); // row/column exchange, I'm using the module in a
 
+    LcdWriteReg(0xF6); // Interface control
+    LcdWriteByte(0x01);
+    LcdWriteByte(0x00);
+    LcdWriteByte(0x01);
+
     LcdWriteReg(0x3A); // COLMOD: Pixel Format Set
-    LcdWriteByte(0x55);// 16 bits/pixel. RGB and MCU interfact format
+    LcdWriteByte(0x55);// 16 bits/pixel. RGB and MCU interface format
+
+    LcdWriteReg(0xB0); // RGB interface control
+    LcdWriteByte(0xC0);
 
     LcdWriteReg(0xB1); // Frame Rate Control
     //LcdWriteData(0x00);

@@ -12,9 +12,25 @@
 #include "stm32f4xx.h"
 #include "stm32f4xx_nucleo.h"
 #include "GUI.h"
+#include "stdlib.h"
 
 void Error_Handler(void);
 void SystemClock_Config(void);
+
+//uint16_t LCD_MakeColor(uint8_t red, uint8_t green, uint8_t blue)
+uint16_t LCD_MakeColor(uint32_t color_to_convert)
+{
+	uint8_t blue = color_to_convert>>16;
+	uint8_t green = color_to_convert>>8;
+	green &= 0xFF;
+	uint8_t red = color_to_convert&0xFF;
+	uint16_t color = red;
+	color <<= 6;
+	color |= green;
+	color <<= 5;
+	color |= blue;
+	return color;
+}
 
 int main(void)
 {
@@ -37,20 +53,48 @@ int main(void)
     volatile int ret;
     ret = GUI_Init();
     asm("nop");
-    volatile int x = GUI_IsInitialized();
-    GUI_Clear();
-    asm("nop");
-    //GUI_FillRect(20,20,280,150);
-    GUI_SetBkColor(GUI_DARKRED);
+//    GUI_SetFont(&GUI_Font8x16);
+//    GUI_DispString("Hello world!");
+//    GUI_DispDecAt( 27, 20,20,4);
+
+
+    //volatile int x = GUI_IsInitialized();
+    //GUI_SetBkColor(GUI_DARKRED);
+//    GUI_Clear();
+//    asm("nop");
+//    //GUI_FillRect(20,20,280,150);
+//    //GUI_SetBkColor(GUI_DARKRED);
+//    //GUI_SetColor(LCD_MakeColor(GUI_BLUE));
+    //GUI_SetColor(GUI_MAKE_COLOR(GUI_RED));
     GUI_SetColor(GUI_RED);
-    GUI_FillRect(20,20,80,120);
-    //GUI_SetColor(GUI_RED);
+    GUI_FillRect(20,20,80,40);
+    //GUI_SetColor(GUI_MAKE_COLOR(GUI_GREEN));
+    GUI_SetColor(GUI_GREEN);
+    GUI_FillRect(20,50,80,70);
+    GUI_SetColor(GUI_BLUE);
+    GUI_FillRect(20,80,80,100);
+    GUI_SetColor((GUI_ORANGE));
+    GUI_FillRect(20,110,80,120);
+    GUI_SetColor(GUI_RED);
+    GUI_SetBkColor(GUI_BLACK);
     //GUI_SetBkColorIndex(1);
 	//GUI_SetColorIndex(2);
     //GUI_Clear();
     //GUI_SetFont(&GUI_Font20_1);
-    GUI_SetFont(&GUI_Font32B_1);
+    int x = 0;
+    int y = 120;
+    for(int i=0;i<16;i++){
+    	GUI_FillRect(x,y,x+10,y+20);
+    	x+=20;
+    }
+    GUI_SetFont(GUI_FONT_32B_ASCII);
+    //GUI_SetFont(GUI_FONT_COMIC24B_1);
+    GUI_SetColor(GUI_BLUE);
+    GUI_SetBkColor(GUI_GREEN);
+    GUI_DispCharAt('A',3,200);
     GUI_DispStringAt("Hi", (LCD_GetXSize()-100)/2, (LCD_GetYSize()-20)/2);
+    GUI_SetBkColor(GUI_DARKCYAN);
+    GUI_DispStringAt("Hello World!", (LCD_GetXSize()-100)/2, 200);
 	for(;;);
 }
 
