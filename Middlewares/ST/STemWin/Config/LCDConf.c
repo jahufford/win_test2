@@ -124,9 +124,9 @@ void LCD_Module_Init();
 
 // Color conversion
 //
-#define COLOR_CONVERSION GUICC_565
-//#define COLOR_CONVERSION GUICC_M565
 //#define COLOR_CONVERSION GUICC_565
+//#define COLOR_CONVERSION GUICC_M565
+#define COLOR_CONVERSION GUICC_565
 
 //
 // Display driver
@@ -408,7 +408,7 @@ void LCD_Hardware_Init(void)
     LCD_SPI_CLK_ENABLE();
 
     h_lcd_spi.Instance = LCD_SPIx;
-    h_lcd_spi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+    h_lcd_spi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
     //h_lcd_spi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
     h_lcd_spi.Init.CLKPhase = SPI_PHASE_1EDGE;
     h_lcd_spi.Init.CLKPolarity = SPI_POLARITY_LOW; // might need to be high with 2nd edge

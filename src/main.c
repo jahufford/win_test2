@@ -12,6 +12,9 @@
 #include "stm32f4xx.h"
 #include "stm32f4xx_nucleo.h"
 #include "GUI.h"
+#include "WM.h"
+#include "PROGBAR.h"
+#include "BUTTON.h"
 #include "stdlib.h"
 
 void Error_Handler(void);
@@ -32,6 +35,20 @@ uint16_t LCD_MakeColor(uint32_t color_to_convert)
 	return color;
 }
 
+   GUI_HWIN hWnd;
+static void cbForegroundWin(WM_MESSAGE * pMsg) {
+  switch (pMsg->MsgId) {
+    case WM_PAINT:
+      GUI_SetBkColor(GUI_GREEN);
+      GUI_Clear();
+      GUI_SetColor(GUI_BLUE);
+      GUI_DispString("Foreground window");
+
+    break;
+    default:
+      WM_DefaultProc(pMsg);
+  }
+}
 int main(void)
 {
 
@@ -83,18 +100,74 @@ int main(void)
     //GUI_SetFont(&GUI_Font20_1);
     int x = 0;
     int y = 120;
-    for(int i=0;i<16;i++){
+    uint32_t colors[25] = {GUI_BLUE,GUI_GREEN,GUI_RED, GUI_CYAN,GUI_MAGENTA,GUI_YELLOW,
+    					   GUI_LIGHTBLUE,GUI_LIGHTGREEN,GUI_LIGHTRED,GUI_LIGHTCYAN, GUI_LIGHTMAGENTA,
+						   GUI_LIGHTYELLOW,GUI_DARKBLUE,GUI_DARKGREEN,GUI_DARKRED,GUI_DARKCYAN,
+						   GUI_DARKMAGENTA,GUI_DARKYELLOW,GUI_WHITE,GUI_LIGHTGRAY,GUI_GRAY,
+						   GUI_DARKGRAY,GUI_BLACK,GUI_BROWN,GUI_ORANGE};
+    for(int i=0;i<25;i++){
+    	GUI_SetColor(colors[i]);
     	GUI_FillRect(x,y,x+10,y+20);
-    	x+=20;
+    	x+=10;
     }
+    GUI_SetColor(GUI_CYAN);
+    GUI_FillRoundedRect(150,30,300,100,10);
     GUI_SetFont(GUI_FONT_32B_ASCII);
     //GUI_SetFont(GUI_FONT_COMIC24B_1);
     GUI_SetColor(GUI_BLUE);
     GUI_SetBkColor(GUI_GREEN);
     GUI_DispCharAt('A',3,200);
-    GUI_DispStringAt("Hi", (LCD_GetXSize()-100)/2, (LCD_GetYSize()-20)/2);
+    //GUI_DispStringAt("Hi", (LCD_GetXSize()-100)/2, (LCD_GetYSize()-20)/2);
     GUI_SetBkColor(GUI_DARKCYAN);
     GUI_DispStringAt("Hello World!", (LCD_GetXSize()-100)/2, 200);
+    GUI_SetColor(GUI_YELLOW);
+    GUI_SetFont(GUI_FONT_COMIC24B_1);
+    GUI_DispStringAt("Hello World!", 95,150);
+    GUI_SetColor(GUI_ORANGE);
+    GUI_FillEllipse(100,100,75,25);
+    GUI_SetColor(GUI_RED);
+    GUI_DrawPie(250,175,50,10,80,0);
+    GUI_SetColor(GUI_BLUE);
+    GUI_DrawPie(250,175,50,81,135,0);
+    GUI_SetColor(GUI_YELLOW);
+    GUI_DrawPie(250,175,50,136,215,0);
+
+    GUI_DispStringAt("Progress bar", 100, 20);
+
+
+    /* Create foreground window */
+    //hWnd = WM_CreateWindow(10, 10, 300, 200, WM_CF_SHOW, cbForegroundWin, 0);
+    PROGBAR_Handle hProgBar;
+    hProgBar = PROGBAR_Create(85, 50, 200, 40, WM_CF_SHOW);
+    PROGBAR_SetBarColor(hProgBar, 0, GUI_YELLOW);
+    PROGBAR_SetBarColor(hProgBar, 1, GUI_RED);
+    PROGBAR_SetValue(hProgBar, 77);
+    PROGBAR_SetFont(hProgBar,GUI_FONT_COMIC24B_1);
+//    BUTTON_Handle btn = BUTTON_CreateEx(30,180,30,15,0,0,WM_CF_SHOW,0);
+//    BUTTON_SetText(btn,"Button");
+    BUTTON_Handle hButton;
+    GUI_SetFont(&GUI_Font8x16);
+    //GUI_DispStringHCenterAt("Click on button...", 160, 90);
+    /* Create the button*/
+    hButton = BUTTON_Create(30, 160, 100, 30, GUI_ID_OK, WM_CF_SHOW);
+    /* Set the button text */
+    BUTTON_SetText(hButton, "Button Up");
+    BUTTON_Handle hButton2;
+    hButton2 = BUTTON_Create(30, 195, 100, 30, GUI_ID_OK, WM_CF_SHOW);
+    BUTTON_SetText(hButton2,"Button Down");
+    BUTTON_SetPressed(hButton2,1);
+    WM_Exec();
+    GUI_Exec();
+    	HAL_Delay(1000);
+//    for(;;){
+//    	BUTTON_SetPressed(hButton,1);
+//    	WM_Exec();
+//    	HAL_Delay(1000);
+//    	BUTTON_SetPressed(hButton,0);
+//    	WM_Exec();
+//    	HAL_Delay(1000);
+//    }
+
 	for(;;);
 }
 
