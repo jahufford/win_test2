@@ -165,25 +165,25 @@ SPI_HandleTypeDef  h_lcd_spi;
 * Function description:
 *   Writes a value to a display register
 */
-static void LcdWriteData(U16 Data) {
-  // ... TBD by user
-	uint8_t *p = (uint8_t*)&Data;
-	LCD_CS_LOW();
-	LCD_DC_HIGH();
-	if(Data&0xFF00){
-      if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p+1), 1,0xFFFF) != HAL_OK){
-        Error_Handler();
-      }
-      if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p), 1,0xFFFF) != HAL_OK){
-        Error_Handler();
-      }
-	}else{
-      if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)&Data, 1,0xFFFF) != HAL_OK){
-        Error_Handler();
-      }
-	}
-	LCD_CS_HIGH();
-}
+//static void LcdWriteData(U16 Data) {
+//  // ... TBD by user
+//	uint8_t *p = (uint8_t*)&Data;
+//	LCD_CS_LOW();
+//	LCD_DC_HIGH();
+//	if(Data&0xFF00){
+//      if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p+1), 1,0xFFFF) != HAL_OK){
+//        Error_Handler();
+//      }
+//      if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p), 1,0xFFFF) != HAL_OK){
+//        Error_Handler();
+//      }
+//	}else{
+//      if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)&Data, 1,0xFFFF) != HAL_OK){
+//        Error_Handler();
+//      }
+//	}
+//	LCD_CS_HIGH();
+//}
 //static void LCD_WriteByte(uint8_t Data) {
 //  // ... TBD by user
 //	LCD_CS_LOW();
