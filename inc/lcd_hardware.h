@@ -37,14 +37,14 @@ extern SPI_HandleTypeDef  h_lcd_spi;
 //
 void LCD_WriteByte(uint8_t data);
 //
-//void LcdWriteReg(U16 Data);
+void LCD_WriteReg(U16 Data);
 //void LcdWriteData(U16 Data);
 //void LcdWriteDataMultiple(U16 * pData, int NumItems);
 //
-//void LCD_Set8Bit(void);
-//void LCD_Set16Bit(void);
+void LCD_Set8Bit(void);
+void LCD_Set16Bit(void);
 void LCD_Hardware_Init(void);
-//void LCD_Module_Init();
+void LCD_Module_Init();
 //
 //uint16_t LCD_ReadPixel();
 //void LCD_SetColumn(uint16_t col_left, uint16_t col_right);

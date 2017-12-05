@@ -55,6 +55,7 @@ Purpose     : Display controller configuration (single layer)
 #include "GUI.h"
 #include "GUIDRV_FlexColor.h"
 #include "ili9341.h"
+#include "lcd_hardware.h"
 
 SPI_HandleTypeDef  h_lcd_spi;
 #define LCD_SPIx						 SPI1
@@ -80,10 +81,10 @@ SPI_HandleTypeDef  h_lcd_spi;
 #define LCD_SET_DATA()   LCD_DC_HIGH()
 #define LCD_SET_CMD()    LCD_DC_LOW()
 
-void LCD_Set8Bit(void);
-void LCD_Set16Bit(void);
+//void LCD_Set8Bit(void);
+//void LCD_Set16Bit(void);
 //void LCD_Hardware_Init(void);
-void LCD_Module_Init();
+//void LCD_Module_Init();
 /*********************************************************************
 *
 *       Layer configuration (to be modified)
@@ -141,21 +142,21 @@ void LCD_Module_Init();
 */
 /********************************************************************
 *
-*       LcdWriteReg
+*       LCD_WriteReg
 *
 * Function description:
 *   Sets display register
 */
-static void LcdWriteReg(U16 Data) {
-  // ... TBD by user
-  uint8_t byte = (uint8_t)Data;
-  LCD_DC_LOW();
-  LCD_CS_LOW();
-  if(HAL_SPI_Transmit(&h_lcd_spi,&byte, 1,0xFFFF) != HAL_OK){
-    Error_Handler();
-    }
-  LCD_CS_HIGH();
-}
+//static void LCD_WriteReg(U16 Data) {
+//  // ... TBD by user
+//  uint8_t byte = (uint8_t)Data;
+//  LCD_DC_LOW();
+//  LCD_CS_LOW();
+//  if(HAL_SPI_Transmit(&h_lcd_spi,&byte, 1,0xFFFF) != HAL_OK){
+//    Error_Handler();
+//    }
+//  LCD_CS_HIGH();
+//}
 
 /********************************************************************
 *
@@ -271,7 +272,7 @@ void LCD_X_Config(void) {
   //
   // Set controller and operation mode
   //
-  PortAPI.pfWrite16_A0  = LcdWriteReg;
+  PortAPI.pfWrite16_A0  = LCD_WriteReg;
   PortAPI.pfWrite16_A1  = LcdWriteData;
   PortAPI.pfWriteM16_A1 = LcdWriteDataMultiple;
   PortAPI.pfReadM16_A1  = LcdReadDataMultiple;
@@ -327,18 +328,18 @@ int LCD_X_DisplayDriver(unsigned LayerIndex, unsigned Cmd, void * pData) {
   }
   return r;
 }
-void LCD_Set8Bit(){
-  	h_lcd_spi.Init.DataSize = SPI_DATASIZE_8BIT;
-    if(HAL_SPI_Init(&h_lcd_spi) != HAL_OK){
-    	//Error_Handler();
-    }
-}
-void LCD_Set16Bit(){
-  	h_lcd_spi.Init.DataSize = SPI_DATASIZE_16BIT;
-    if(HAL_SPI_Init(&h_lcd_spi) != HAL_OK){
-    	//Error_Handler();
-    }
-}
+//void LCD_Set8Bit(){
+//  	h_lcd_spi.Init.DataSize = SPI_DATASIZE_8BIT;
+//    if(HAL_SPI_Init(&h_lcd_spi) != HAL_OK){
+//    	//Error_Handler();
+//    }
+//}
+//void LCD_Set16Bit(){
+//  	h_lcd_spi.Init.DataSize = SPI_DATASIZE_16BIT;
+//    if(HAL_SPI_Init(&h_lcd_spi) != HAL_OK){
+//    	//Error_Handler();
+//    }
+//}
 
 
 //void LCD_Hardware_Init(void)
@@ -428,166 +429,166 @@ void LCD_Set16Bit(){
 //    }
 //}
 
-void LCD_Module_Init()
-{
-	// adapted from Seed Technology graphics library, by Alber. Miao  Loovee, Viswewara
-	// who go the initialization code from a TFT vendor
-    LcdWriteReg(LCD_POWERA);
-    LCD_WriteByte(0x39); // these values are straight from the datasheet
-    LCD_WriteByte(0x2C);
-    LCD_WriteByte(0x00);
-    LCD_WriteByte(0x34);// 1.6 volts for  Vcore
-    LCD_WriteByte(0x02);// 5.6 volts for DDVHD
-
-    LcdWriteReg(LCD_POWERB);
-    LCD_WriteByte(0x00);
-    LCD_WriteByte(0XC1);
-    LCD_WriteByte(0X30); // discharge path is enabled
-
-    LcdWriteReg(LCD_DTCA); // these values are different than the datasheet
-    LCD_WriteByte(0x85);
-    LCD_WriteByte(0x00);
-    LCD_WriteByte(0x78);
-//    LcdWriteData(0x84);
-//    LcdWriteData(0x11);
-//    LcdWriteData(0x7A);
-
-
-    LcdWriteReg(LCD_DTCB);
-    LCD_WriteByte(0x00);
-    //LcdWriteData(0x66);
-    LCD_WriteByte(0x00);
-
-    LcdWriteReg(LCD_POWER_SEQ);
-    LCD_WriteByte(0x64);
-    LCD_WriteByte(0x03);
-    LCD_WriteByte(0X12);
-    LCD_WriteByte(0X81);
-
-    LcdWriteReg(LCD_PRC);
-    LCD_WriteByte(0x20);
-
-    LcdWriteReg(0xC0);    	//Power control
-    LCD_WriteByte(0x23);   	//VRH[5:0] 4.6V
-
-    LcdWriteReg(0xC1);    	//Power control
-    LCD_WriteByte(0x10);   	//SAP[2:0];BT[3:0]
-
-    LcdWriteReg(0xC5);    	//VCM control
-    LCD_WriteByte(0x3e);   	//Contrast 5.85
-    LCD_WriteByte(0x28);    //-1.5
-
-    LcdWriteReg(0xC7);    	//VCM control2
-    LCD_WriteByte(0x86);  	 //--
-    //LcdWriteData(0xC0);  	 //--
-
-    LcdWriteReg(0x36);    	// Memory Access Control
-    //LcdWriteData(0x48);  	//C8
-    LCD_WriteByte(0x28); // row/column exchange, I'm using the module in a
-    					 // horizontal orientation, with the top left corner
-    					 // being x=0 y=0
-    //LCD_WriteByte(0x20);
-    //LcdWriteData(0x3C); // row/column exchange, I'm using the module in a
-
-    LcdWriteReg(0xF6); // Interface control
-    LCD_WriteByte(0x01);
-    LCD_WriteByte(0x00);
-    LCD_WriteByte(0x01);
-
-    LcdWriteReg(0x3A); // COLMOD: Pixel Format Set
-    LCD_WriteByte(0x55);// 16 bits/pixel. RGB and MCU interface format
-
-    LcdWriteReg(0xB0); // RGB interface control
-    LCD_WriteByte(0xC0);
-
-    LcdWriteReg(0xB1); // Frame Rate Control
-    //LcdWriteData(0x00);
-    LCD_WriteByte(0x00);
-    //LcdWriteData(0x18);// 79Hz. datasheet default is 70Hz, 0x1B
-    LCD_WriteByte(0x1F);
-
-    LcdWriteReg(0xB6);    	// Display Function Control
-    LCD_WriteByte(0x08);
-    LCD_WriteByte(0x82);
-    LCD_WriteByte(0x27);
-
-    LcdWriteReg(0xF2);    	// 3Gamma Function Disable
-    LCD_WriteByte(0x00);
-
-    LcdWriteReg(0x26);    	//Gamma curve selected
-    LCD_WriteByte(0x01);
-
-    LcdWriteReg(0xE0);    	//Set Gamma
-    LCD_WriteByte(0x0F);
-    LCD_WriteByte(0x31);
-    LCD_WriteByte(0x2B);
-    LCD_WriteByte(0x0C);
-    LCD_WriteByte(0x0E);
-    LCD_WriteByte(0x08);
-    LCD_WriteByte(0x4E);
-    LCD_WriteByte(0xF1);
-    LCD_WriteByte(0x37);
-    LCD_WriteByte(0x07);
-    LCD_WriteByte(0x10);
-    LCD_WriteByte(0x03);
-    LCD_WriteByte(0x0E);
-    LCD_WriteByte(0x09);
-    LCD_WriteByte(0x00);
-
-    LcdWriteReg(0XE1);    	//Set Gamma
-    LCD_WriteByte(0x00);
-    LCD_WriteByte(0x0E);
-    LCD_WriteByte(0x14);
-    LCD_WriteByte(0x03);
-    LCD_WriteByte(0x11);
-    LCD_WriteByte(0x07);
-    LCD_WriteByte(0x31);
-    LCD_WriteByte(0xC1);
-    LCD_WriteByte(0x48);
-    LCD_WriteByte(0x08);
-    LCD_WriteByte(0x0F);
-    LCD_WriteByte(0x0C);
-    LCD_WriteByte(0x31);
-    LCD_WriteByte(0x36);
-    LCD_WriteByte(0x0F);
-
-    LcdWriteReg(0x11);    	//Exit Sleep
-    HAL_Delay(120);
-
-    LcdWriteReg(0x34);
-    LCD_WriteByte(0x01);
-
-    LcdWriteReg(0x29);    //Display on
-    LcdWriteReg(0x2c);
-//-------------------------------
-	LcdWriteReg(LCD_COLUMN_ADDR);
-	LCD_DC_HIGH();
-	LCD_CS_LOW();
-	LCD_WriteByte(0);
-	LCD_WriteByte(0);
-	//LCD_WriteWord(0);
-	//LCD_WriteWord(319);
-	LCD_WriteByte(319>>8);
-	LCD_WriteByte((uint8_t)319);
-	LCD_CS_HIGH();
-
-	LcdWriteReg(LCD_PAGE_ADDR);
-	LCD_DC_HIGH();
-	LCD_CS_LOW();
-	//LCD_WriteWord(0);
-	LCD_WriteByte(0);
-	LCD_WriteByte(0);
-	//LCD_WriteWord(239);
-	LCD_WriteByte(239>>8);
-	LCD_WriteByte((uint8_t)239);
-	LCD_CS_HIGH();
-
-	LcdWriteReg(LCD_GRAM);
-
-    LCD_FillScreen2(0x00FF);
-    asm("nop");
-    HAL_Delay(500);
-}
+//void LCD_Module_Init()
+//{
+//	// adapted from Seed Technology graphics library, by Alber. Miao  Loovee, Viswewara
+//	// who go the initialization code from a TFT vendor
+//    LCD_WriteReg(LCD_POWERA);
+//    LCD_WriteByte(0x39); // these values are straight from the datasheet
+//    LCD_WriteByte(0x2C);
+//    LCD_WriteByte(0x00);
+//    LCD_WriteByte(0x34);// 1.6 volts for  Vcore
+//    LCD_WriteByte(0x02);// 5.6 volts for DDVHD
+//
+//    LCD_WriteReg(LCD_POWERB);
+//    LCD_WriteByte(0x00);
+//    LCD_WriteByte(0XC1);
+//    LCD_WriteByte(0X30); // discharge path is enabled
+//
+//    LCD_WriteReg(LCD_DTCA); // these values are different than the datasheet
+//    LCD_WriteByte(0x85);
+//    LCD_WriteByte(0x00);
+//    LCD_WriteByte(0x78);
+////    LcdWriteData(0x84);
+////    LcdWriteData(0x11);
+////    LcdWriteData(0x7A);
+//
+//
+//    LCD_WriteReg(LCD_DTCB);
+//    LCD_WriteByte(0x00);
+//    //LcdWriteData(0x66);
+//    LCD_WriteByte(0x00);
+//
+//    LCD_WriteReg(LCD_POWER_SEQ);
+//    LCD_WriteByte(0x64);
+//    LCD_WriteByte(0x03);
+//    LCD_WriteByte(0X12);
+//    LCD_WriteByte(0X81);
+//
+//    LCD_WriteReg(LCD_PRC);
+//    LCD_WriteByte(0x20);
+//
+//    LCD_WriteReg(0xC0);    	//Power control
+//    LCD_WriteByte(0x23);   	//VRH[5:0] 4.6V
+//
+//    LCD_WriteReg(0xC1);    	//Power control
+//    LCD_WriteByte(0x10);   	//SAP[2:0];BT[3:0]
+//
+//    LCD_WriteReg(0xC5);    	//VCM control
+//    LCD_WriteByte(0x3e);   	//Contrast 5.85
+//    LCD_WriteByte(0x28);    //-1.5
+//
+//    LCD_WriteReg(0xC7);    	//VCM control2
+//    LCD_WriteByte(0x86);  	 //--
+//    //LcdWriteData(0xC0);  	 //--
+//
+//    LCD_WriteReg(0x36);    	// Memory Access Control
+//    //LcdWriteData(0x48);  	//C8
+//    LCD_WriteByte(0x28); // row/column exchange, I'm using the module in a
+//    					 // horizontal orientation, with the top left corner
+//    					 // being x=0 y=0
+//    //LCD_WriteByte(0x20);
+//    //LcdWriteData(0x3C); // row/column exchange, I'm using the module in a
+//
+//    LCD_WriteReg(0xF6); // Interface control
+//    LCD_WriteByte(0x01);
+//    LCD_WriteByte(0x00);
+//    LCD_WriteByte(0x01);
+//
+//    LCD_WriteReg(0x3A); // COLMOD: Pixel Format Set
+//    LCD_WriteByte(0x55);// 16 bits/pixel. RGB and MCU interface format
+//
+//    LCD_WriteReg(0xB0); // RGB interface control
+//    LCD_WriteByte(0xC0);
+//
+//    LCD_WriteReg(0xB1); // Frame Rate Control
+//    //LcdWriteData(0x00);
+//    LCD_WriteByte(0x00);
+//    //LcdWriteData(0x18);// 79Hz. datasheet default is 70Hz, 0x1B
+//    LCD_WriteByte(0x1F);
+//
+//    LCD_WriteReg(0xB6);    	// Display Function Control
+//    LCD_WriteByte(0x08);
+//    LCD_WriteByte(0x82);
+//    LCD_WriteByte(0x27);
+//
+//    LCD_WriteReg(0xF2);    	// 3Gamma Function Disable
+//    LCD_WriteByte(0x00);
+//
+//    LCD_WriteReg(0x26);    	//Gamma curve selected
+//    LCD_WriteByte(0x01);
+//
+//    LCD_WriteReg(0xE0);    	//Set Gamma
+//    LCD_WriteByte(0x0F);
+//    LCD_WriteByte(0x31);
+//    LCD_WriteByte(0x2B);
+//    LCD_WriteByte(0x0C);
+//    LCD_WriteByte(0x0E);
+//    LCD_WriteByte(0x08);
+//    LCD_WriteByte(0x4E);
+//    LCD_WriteByte(0xF1);
+//    LCD_WriteByte(0x37);
+//    LCD_WriteByte(0x07);
+//    LCD_WriteByte(0x10);
+//    LCD_WriteByte(0x03);
+//    LCD_WriteByte(0x0E);
+//    LCD_WriteByte(0x09);
+//    LCD_WriteByte(0x00);
+//
+//    LCD_WriteReg(0XE1);    	//Set Gamma
+//    LCD_WriteByte(0x00);
+//    LCD_WriteByte(0x0E);
+//    LCD_WriteByte(0x14);
+//    LCD_WriteByte(0x03);
+//    LCD_WriteByte(0x11);
+//    LCD_WriteByte(0x07);
+//    LCD_WriteByte(0x31);
+//    LCD_WriteByte(0xC1);
+//    LCD_WriteByte(0x48);
+//    LCD_WriteByte(0x08);
+//    LCD_WriteByte(0x0F);
+//    LCD_WriteByte(0x0C);
+//    LCD_WriteByte(0x31);
+//    LCD_WriteByte(0x36);
+//    LCD_WriteByte(0x0F);
+//
+//    LCD_WriteReg(0x11);    	//Exit Sleep
+//    HAL_Delay(120);
+//
+//    LCD_WriteReg(0x34);
+//    LCD_WriteByte(0x01);
+//
+//    LCD_WriteReg(0x29);    //Display on
+//    LCD_WriteReg(0x2c);
+////-------------------------------
+//	LCD_WriteReg(LCD_COLUMN_ADDR);
+//	LCD_DC_HIGH();
+//	LCD_CS_LOW();
+//	LCD_WriteByte(0);
+//	LCD_WriteByte(0);
+//	//LCD_WriteWord(0);
+//	//LCD_WriteWord(319);
+//	LCD_WriteByte(319>>8);
+//	LCD_WriteByte((uint8_t)319);
+//	LCD_CS_HIGH();
+//
+//	LCD_WriteReg(LCD_PAGE_ADDR);
+//	LCD_DC_HIGH();
+//	LCD_CS_LOW();
+//	//LCD_WriteWord(0);
+//	LCD_WriteByte(0);
+//	LCD_WriteByte(0);
+//	//LCD_WriteWord(239);
+//	LCD_WriteByte(239>>8);
+//	LCD_WriteByte((uint8_t)239);
+//	LCD_CS_HIGH();
+//
+//	LCD_WriteReg(LCD_GRAM);
+//
+//    LCD_FillScreen2(0x00FF);
+//    asm("nop");
+//    HAL_Delay(500);
+//}
 void LCD_FillScreen2(uint16_t color)
 {
 	uint32_t varr = 0xFF;
@@ -605,7 +606,7 @@ void LCD_FillScreen2(uint16_t color)
       color32[i] <<=16;
       color32[i] |= color;
 	}
-	LcdWriteReg(LCD_COLUMN_ADDR);
+	LCD_WriteReg(LCD_COLUMN_ADDR);
 	LCD_DC_HIGH();
 	LCD_CS_LOW();
 	LCD_WriteByte(0);
@@ -616,7 +617,7 @@ void LCD_FillScreen2(uint16_t color)
 	LCD_WriteByte((uint8_t)319);
 	LCD_CS_HIGH();
 
-	LcdWriteReg(LCD_PAGE_ADDR);
+	LCD_WriteReg(LCD_PAGE_ADDR);
 	LCD_DC_HIGH();
 	LCD_CS_LOW();
 	//LCD_WriteWord(0);
@@ -627,7 +628,7 @@ void LCD_FillScreen2(uint16_t color)
 	LCD_WriteByte((uint8_t)239);
 	LCD_CS_HIGH();
 
-	LcdWriteReg(LCD_GRAM);
+	LCD_WriteReg(LCD_GRAM);
 
   	h_lcd_spi.Init.DataSize = SPI_DATASIZE_16BIT;
     if(HAL_SPI_Init(&h_lcd_spi) != HAL_OK){
