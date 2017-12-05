@@ -417,7 +417,7 @@ void LCD_Set16Bit()
 void LCD_FillScreen2(uint16_t color)
 {
 	uint32_t varr = 0xFF;
-//	// weak-ass sychronization attempt, at least make the tearing lines be stable
+//	// weak-ass sychronization attempt, at least it makes the tearing lines stable
 //	while(varr>1){
 //      varr = LCD_ReadData(0x45,2);
 //      //varr >>= 16;
