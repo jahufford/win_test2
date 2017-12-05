@@ -43,7 +43,7 @@ void LCD_WriteByte(uint8_t data);
 //
 //void LCD_Set8Bit(void);
 //void LCD_Set16Bit(void);
-//void LCD_Hardware_Init(void);
+void LCD_Hardware_Init(void);
 //void LCD_Module_Init();
 //
 //uint16_t LCD_ReadPixel();
