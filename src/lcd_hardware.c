@@ -6,7 +6,6 @@
 // */
 #include "lcd_hardware.h"
 #include "ili9341.h"
-//TODO change LCD_WriteByte to LCD_WriteByte
 SPI_HandleTypeDef  h_lcd_spi;
 //
 ///********************************************************************
@@ -90,6 +89,18 @@ void LCD_WriteByte(uint8_t Data) {
 	LCD_CS_HIGH();
 }
 
+void LCD_WriteWord(uint16_t data)
+{
+	uint8_t high_byte = (uint8_t)(data >> 8);
+	uint8_t low_byte  = (uint8_t)data;
+
+	if(HAL_SPI_Transmit(&h_lcd_spi,&high_byte, 1,0xFFFF) != HAL_OK){
+		Error_Handler();
+	}
+	if(HAL_SPI_Transmit(&h_lcd_spi,&low_byte, 1,0xFFFF) != HAL_OK){
+		Error_Handler();
+    }
+}
 void LCD_Hardware_Init(void)
 {
 	__HAL_RCC_GPIOA_CLK_ENABLE();
@@ -365,26 +376,26 @@ void LCD_Module_Init()
 //	color = ((red&0xF8)<<8)|((green&0xFC)<<3)|(blue>>3);
 //	return color;
 //}
-//void LCD_SetColumn(uint16_t col_left, uint16_t col_right)
-//{
-//	LCD_WriteCmd(LCD_COLUMN_ADDR);
-//	LCD_DC_HIGH();
-//	LCD_CS_LOW();
-//	LCD_WriteWord(col_left);
-//	LCD_WriteWord(col_right);
-//	LCD_CS_HIGH();
-//}
-//
-//void LCD_SetRow(uint16_t row_top, uint16_t row_bottom)
-//{
-//	LCD_WriteCmd(LCD_PAGE_ADDR);
-//	LCD_DC_HIGH();
-//	LCD_CS_LOW();
-//	LCD_WriteWord(row_top);
-//	LCD_WriteWord(row_bottom);
-//	LCD_CS_HIGH();
-//}
-//
+void LCD_SetColumn(uint16_t col_left, uint16_t col_right)
+{
+	LCD_WriteReg(LCD_COLUMN_ADDR);
+	LCD_DC_HIGH();
+	LCD_CS_LOW();
+	LCD_WriteWord(col_left);
+	LCD_WriteWord(col_right);
+	LCD_CS_HIGH();
+}
+
+void LCD_SetRow(uint16_t row_top, uint16_t row_bottom)
+{
+	LCD_WriteReg(LCD_PAGE_ADDR);
+	LCD_DC_HIGH();
+	LCD_CS_LOW();
+	LCD_WriteWord(row_top);
+	LCD_WriteWord(row_bottom);
+	LCD_CS_HIGH();
+}
+
 void LCD_Set8Bit()
 {
   	h_lcd_spi.Init.DataSize = SPI_DATASIZE_8BIT;
@@ -402,76 +413,76 @@ void LCD_Set16Bit()
 }
 
 
-//
-//void LCD_FillScreen2(uint16_t color)
-//{
-//	uint32_t varr = 0xFF;
-////	// weak-ass sychronization attempt, at least make the tearing lines be stable
-////	while(varr>1){
-////      varr = LCD_ReadData(0x45,2);
-////      //varr >>= 16;
-////      asm("nop");
-////	}
-//	uint8_t burst = 160;
-//	//uint8_t burst = 2;
-//	uint32_t color32[burst/2];
-//	for(uint8_t i=0;i<(burst/2);i++){
-//      color32[i] = color;
-//      color32[i] <<=16;
-//      color32[i] |= color;
+
+void LCD_FillScreen2(uint16_t color)
+{
+	uint32_t varr = 0xFF;
+//	// weak-ass sychronization attempt, at least make the tearing lines be stable
+//	while(varr>1){
+//      varr = LCD_ReadData(0x45,2);
+//      //varr >>= 16;
+//      asm("nop");
 //	}
-//	LCD_WriteReg(LCD_COLUMN_ADDR);
-//	LCD_DC_HIGH();
-//	LCD_CS_LOW();
-//	LCD_WriteByte(0);
-//	LCD_WriteByte(0);
-//	//LCD_WriteWord(0);
-//	//LCD_WriteWord(319);
-//	LCD_WriteByte(319>>8);
-//	LCD_WriteByte((uint8_t)319);
-//	LCD_CS_HIGH();
-//
-//	LCD_WriteReg(LCD_PAGE_ADDR);
-//	LCD_DC_HIGH();
-//	LCD_CS_LOW();
-//	//LCD_WriteWord(0);
-//	LCD_WriteByte(0);
-//	LCD_WriteByte(0);
-//	//LCD_WriteWord(239);
-//	LCD_WriteByte(239>>8);
-//	LCD_WriteByte((uint8_t)239);
-//	LCD_CS_HIGH();
-//
-//	LCD_WriteReg(LCD_GRAM);
-//
-//  	h_lcd_spi.Init.DataSize = SPI_DATASIZE_16BIT;
-//    if(HAL_SPI_Init(&h_lcd_spi) != HAL_OK){
-//    }
-//    LCD_DC_HIGH();
-//    LCD_CS_LOW();
-//  	uint8_t data = 1;
-//  	int8_t incr = 1;
-//    for(uint32_t i=0; i<320*240/burst; i++)
-//    {
-//    //	LCD_WriteWord(color);
-//    	//transmit function can transfer 80 bits at a time, 5 words (5*16)
-//    	if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)&color32[0], burst,0xFFFF) != HAL_OK){
-//          Error_Handler();
-//        }
-//    	//LCD_WriteByte(data);
-//    	//LCD_WriteByte(data);
-////    	data += incr;
-////    	if(data == limit){
-////    		incr = -1;
-////    	}
-////    	if(data == 0){
-////    		incr = 1;
-////    	}
-//    }
-//    LCD_CS_HIGH();
-//	h_lcd_spi.Init.DataSize = SPI_DATASIZE_8BIT;
-//    if(HAL_SPI_Init(&h_lcd_spi) != HAL_OK){
-//
-//    }
-//
-//}
+	uint8_t burst = 160;
+	//uint8_t burst = 2;
+	uint32_t color32[burst/2];
+	for(uint8_t i=0;i<(burst/2);i++){
+      color32[i] = color;
+      color32[i] <<=16;
+      color32[i] |= color;
+	}
+	LCD_WriteReg(LCD_COLUMN_ADDR);
+	LCD_DC_HIGH();
+	LCD_CS_LOW();
+	LCD_WriteByte(0);
+	LCD_WriteByte(0);
+	//LCD_WriteWord(0);
+	//LCD_WriteWord(319);
+	LCD_WriteByte(319>>8);
+	LCD_WriteByte((uint8_t)319);
+	LCD_CS_HIGH();
+
+	LCD_WriteReg(LCD_PAGE_ADDR);
+	LCD_DC_HIGH();
+	LCD_CS_LOW();
+	//LCD_WriteWord(0);
+	LCD_WriteByte(0);
+	LCD_WriteByte(0);
+	//LCD_WriteWord(239);
+	LCD_WriteByte(239>>8);
+	LCD_WriteByte((uint8_t)239);
+	LCD_CS_HIGH();
+
+	LCD_WriteReg(LCD_GRAM);
+
+  	h_lcd_spi.Init.DataSize = SPI_DATASIZE_16BIT;
+    if(HAL_SPI_Init(&h_lcd_spi) != HAL_OK){
+    }
+    LCD_DC_HIGH();
+    LCD_CS_LOW();
+  	uint8_t data = 1;
+  	int8_t incr = 1;
+    for(uint32_t i=0; i<320*240/burst; i++)
+    {
+    //	LCD_WriteWord(color);
+    	//transmit function can transfer 80 bits at a time, 5 words (5*16)
+    	if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)&color32[0], burst,0xFFFF) != HAL_OK){
+          Error_Handler();
+        }
+    	//LCD_WriteByte(data);
+    	//LCD_WriteByte(data);
+//    	data += incr;
+//    	if(data == limit){
+//    		incr = -1;
+//    	}
+//    	if(data == 0){
+//    		incr = 1;
+//    	}
+    }
+    LCD_CS_HIGH();
+	h_lcd_spi.Init.DataSize = SPI_DATASIZE_8BIT;
+    if(HAL_SPI_Init(&h_lcd_spi) != HAL_OK){
+
+    }
+
+}
