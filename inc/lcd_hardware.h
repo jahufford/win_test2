@@ -36,18 +36,19 @@ extern SPI_HandleTypeDef  h_lcd_spi;
 #define LCD_SET_CMD()    LCD_DC_LOW()
 //
 void LCD_WriteByte(uint8_t data);
-//
+void LCD_WriteWord(uint16_t data);
 void LCD_WriteReg(U16 Data);
 void LCD_WriteData(U16 Data);
 void LCD_WriteDataMultiple(U16 * pData, int NumItems);
-//
+
+
 void LCD_Set8Bit(void);
 void LCD_Set16Bit(void);
 void LCD_Hardware_Init(void);
 void LCD_Module_Init();
-//
+
 //uint16_t LCD_ReadPixel();
 //void LCD_SetColumn(uint16_t col_left, uint16_t col_right);
 //void LCD_SetRow(uint16_t row_top, uint16_t row_bottom);
-//void LCD_FillScreen2(uint16_t color);
+void LCD_FillScreen2(uint16_t color);
 #endif /* LCD_HARDWARE_H_ */
