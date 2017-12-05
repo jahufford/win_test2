@@ -38,8 +38,8 @@ extern SPI_HandleTypeDef  h_lcd_spi;
 void LCD_WriteByte(uint8_t data);
 //
 void LCD_WriteReg(U16 Data);
-void LcdWriteData(U16 Data);
-//void LcdWriteDataMultiple(U16 * pData, int NumItems);
+void LCD_WriteData(U16 Data);
+void LCD_WriteDataMultiple(U16 * pData, int NumItems);
 //
 void LCD_Set8Bit(void);
 void LCD_Set16Bit(void);

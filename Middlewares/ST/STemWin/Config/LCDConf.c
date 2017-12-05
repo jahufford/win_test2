@@ -200,23 +200,23 @@ SPI_HandleTypeDef  h_lcd_spi;
 * Function description:
 *   Writes multiple values to a display register.
 */
-static void LcdWriteDataMultiple(U16 * pData, int NumItems) {
-	uint8_t *p = (uint8_t*)pData;
-  LCD_CS_LOW();
-  LCD_DC_HIGH();
-  while (NumItems--) {
-    // ... TBD by user
-
-	if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p+1), 1,0xFFFF) != HAL_OK){
-		//Error_Handler();
-    }
-	if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p), 1,0xFFFF) != HAL_OK){
-		//Error_Handler();
-    }
-	pData++;
-  }
-  LCD_CS_HIGH();
-}
+//static void LcdWriteDataMultiple(U16 * pData, int NumItems) {
+//	uint8_t *p = (uint8_t*)pData;
+//  LCD_CS_LOW();
+//  LCD_DC_HIGH();
+//  while (NumItems--) {
+//    // ... TBD by user
+//
+//	if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p+1), 1,0xFFFF) != HAL_OK){
+//		//Error_Handler();
+//    }
+//	if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p), 1,0xFFFF) != HAL_OK){
+//		//Error_Handler();
+//    }
+//	pData++;
+//  }
+//  LCD_CS_HIGH();
+//}
 
 /********************************************************************
 *
@@ -273,8 +273,8 @@ void LCD_X_Config(void) {
   // Set controller and operation mode
   //
   PortAPI.pfWrite16_A0  = LCD_WriteReg;
-  PortAPI.pfWrite16_A1  = LcdWriteData;
-  PortAPI.pfWriteM16_A1 = LcdWriteDataMultiple;
+  PortAPI.pfWrite16_A1  = LCD_WriteData;
+  PortAPI.pfWriteM16_A1 = LCD_WriteDataMultiple;
   PortAPI.pfReadM16_A1  = LcdReadDataMultiple;
 
   //GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66708, GUIDRV_FLEXCOLOR_M16C0B16);

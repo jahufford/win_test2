@@ -29,12 +29,12 @@ void LCD_WriteReg(U16 Data)
 }
 ///********************************************************************
 //*
-//*       LcdWriteData
+//*       LCD_WriteData
 //*
 //* Function description:
 //*   Writes a value to a display register
 //*/
-void LcdWriteData(U16 Data)
+void LCD_WriteData(U16 Data)
 {
   // ... TBD by user
 	uint8_t *p = (uint8_t*)&Data;
@@ -57,30 +57,29 @@ void LcdWriteData(U16 Data)
 //
 ///********************************************************************
 //*
-//*       LcdWriteDataMultiple
+//*       LCD_WriteDataMultiple
 //*
 //* Function description:
 //*   Writes multiple values to a display register.
 //*/
-//void LcdWriteDataMultiple(U16 * pData, int NumItems)
-//{
-//	uint8_t *p = (uint8_t*)pData;
-//  LCD_CS_LOW();
-//  LCD_DC_HIGH();
-//  while (NumItems--) {
-//    // ... TBD by user
-//
-//	if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p+1), 1,0xFFFF) != HAL_OK){
-//		//Error_Handler();
-//    }
-//	if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p), 1,0xFFFF) != HAL_OK){
-//		//Error_Handler();
-//    }
-//	pData++;
-//  }
-//  LCD_CS_HIGH();
-//}
-//
+void LCD_WriteDataMultiple(U16 * pData, int NumItems)
+{
+  uint8_t *p = (uint8_t*)pData;
+  LCD_CS_LOW();
+  LCD_DC_HIGH();
+  while (NumItems--) {
+	// have to reverse the order of the bytes
+	if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p+1), 1,0xFFFF) != HAL_OK){
+		//Error_Handler();
+    }
+	if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p), 1,0xFFFF) != HAL_OK){
+		//Error_Handler();
+    }
+	pData++;
+  }
+  LCD_CS_HIGH();
+}
+
 void LCD_WriteByte(uint8_t Data) {
   // ... TBD by user
 	LCD_CS_LOW();
@@ -198,14 +197,14 @@ void LCD_Module_Init()
     LCD_WriteByte(0x85);
     LCD_WriteByte(0x00);
     LCD_WriteByte(0x78);
-//    LcdWriteData(0x84);
-//    LcdWriteData(0x11);
-//    LcdWriteData(0x7A);
+//    LCD_WriteData(0x84);
+//    LCD_WriteData(0x11);
+//    LCD_WriteData(0x7A);
 
 
     LCD_WriteReg(LCD_DTCB);
     LCD_WriteByte(0x00);
-    //LcdWriteData(0x66);
+    //LCD_WriteData(0x66);
     LCD_WriteByte(0x00);
 
     LCD_WriteReg(LCD_POWER_SEQ);
@@ -229,15 +228,15 @@ void LCD_Module_Init()
 
     LCD_WriteReg(0xC7);    	//VCM control2
     LCD_WriteByte(0x86);  	 //--
-    //LcdWriteData(0xC0);  	 //--
+    //LCD_WriteData(0xC0);  	 //--
 
     LCD_WriteReg(0x36);    	// Memory Access Control
-    //LcdWriteData(0x48);  	//C8
+    //LCD_WriteData(0x48);  	//C8
     LCD_WriteByte(0x28); // row/column exchange, I'm using the module in a
     					 // horizontal orientation, with the top left corner
     					 // being x=0 y=0
     //LCD_WriteByte(0x20);
-    //LcdWriteData(0x3C); // row/column exchange, I'm using the module in a
+    //LCD_WriteData(0x3C); // row/column exchange, I'm using the module in a
 
     LCD_WriteReg(0xF6); // Interface control
     LCD_WriteByte(0x01);
@@ -251,9 +250,9 @@ void LCD_Module_Init()
     LCD_WriteByte(0xC0);
 
     LCD_WriteReg(0xB1); // Frame Rate Control
-    //LcdWriteData(0x00);
+    //LCD_WriteData(0x00);
     LCD_WriteByte(0x00);
-    //LcdWriteData(0x18);// 79Hz. datasheet default is 70Hz, 0x1B
+    //LCD_WriteData(0x18);// 79Hz. datasheet default is 70Hz, 0x1B
     LCD_WriteByte(0x1F);
 
     LCD_WriteReg(0xB6);    	// Display Function Control
