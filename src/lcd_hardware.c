@@ -101,7 +101,7 @@ void LCD_WriteWord(uint16_t data)
 		Error_Handler();
     }
 }
-void LCD_Hardware_Init(void)
+void LCD_HardwareInit(void)
 {
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 	__HAL_RCC_GPIOB_CLK_ENABLE();
@@ -188,7 +188,7 @@ void LCD_Hardware_Init(void)
     }
 }
 
-void LCD_Module_Init()
+void LCD_ModuleInit()
 {
 	// adapted from Seed Technology graphics library, by Alber. Miao  Loovee, Viswewara
 	// who go the initialization code from a TFT vendor
