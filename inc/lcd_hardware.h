@@ -23,8 +23,10 @@ extern SPI_HandleTypeDef  h_lcd_spi;
 #define LCD_SPI_NSS_PORT				 GPIOB
 #define LCD_SPI_DC_PIN					 GPIO_PIN_8
 #define LCD_SPI_DC_PORT                  GPIOA
-#define LCD_RESET_PIN					 GPIO_PIN_7
-#define LCD_RESET_PORT					 GPIOC
+//#define LCD_RESET_PIN					 GPIO_PIN_7
+//#define LCD_RESET_PORT					 GPIOC
+#define LCD_RESET_PIN					 GPIO_PIN_6
+#define LCD_RESET_PORT					 GPIOB
 #define LCD_SPI_CLK_ENABLE()			 __HAL_RCC_SPI1_CLK_ENABLE()
 
 #define LCD_CS_LOW() 	HAL_GPIO_WritePin(LCD_SPI_NSS_PORT,LCD_SPI_NSS_PIN,GPIO_PIN_RESET)
@@ -44,8 +46,8 @@ void LCD_WriteDataMultiple(U16 * pData, int NumItems);
 
 void LCD_Set8Bit(void);
 void LCD_Set16Bit(void);
-void LCD_Hardware_Init(void);
-void LCD_Module_Init();
+void LCD_HardwareInit(void);
+void LCD_ModuleInit();
 
 //uint16_t LCD_ReadPixel();
 //void LCD_SetColumn(uint16_t col_left, uint16_t col_right);
