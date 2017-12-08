@@ -99,11 +99,6 @@ void EXTI9_5_IRQHandler(void)
 	// handle touchscreen interrupt
 	if(__HAL_GPIO_EXTI_GET_IT(TOUCHSCREEN_IRQ_PIN)){
       EXTI->IMR &= ~(1<<7); // mask the interrupt
-      __HAL_GPIO_EXTI_CLEAR_IT(TOUCHSCREEN_IRQ_PIN);
-      asm("nop");
-      for(int i=0;i<3000;i++){
-        asm("nop");
-      }
     //	NVIC_DisableIRQ(EXTI9_5_IRQn);
       // start bit
       // A2
@@ -114,9 +109,7 @@ void EXTI9_5_IRQHandler(void)
       // PD1
       // PD0
       TOUCHSCREEN_CS_LOW();
-    //	// read y position
-    //	TS_WriteData(0xD9);
-      // read x position
+      // read x position, actually it's the y for the TS, but we've rotated to landscape mode
       TS_WriteData(0x99);
       uint8_t byte[2];
       if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
@@ -125,12 +118,15 @@ void EXTI9_5_IRQHandler(void)
       if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
          Error_Handler();
       }
+      TOUCHSCREEN_CS_HIGH();
 
       uint16_t datax = byte[0];
       datax <<= 8;
       datax |= byte[1];
       datax >>= 3;
 
+      // read y position
+      TOUCHSCREEN_CS_LOW();
       TS_WriteData(0xD9);
       if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
          Error_Handler();
@@ -138,14 +134,13 @@ void EXTI9_5_IRQHandler(void)
       if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
          Error_Handler();
       }
-
+      TOUCHSCREEN_CS_HIGH();
       uint16_t datay = byte[0];
       datay <<= 8;
       datay |= byte[1];
       datay >>= 3;
 
-
-
+      TOUCHSCREEN_CS_LOW();
       TS_WriteData(0x90); // back to idle
       if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
          Error_Handler();
@@ -153,21 +148,21 @@ void EXTI9_5_IRQHandler(void)
       if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
          Error_Handler();
       }
-
-      printf("X reading %d, Y reading %d\r\n",datax, datay);
       TOUCHSCREEN_CS_HIGH();
+      //printf("X = %d, Y = %d\r\n",datax, datay);
       // if it's the touchscreen's irq line
         //__HAL_GPIO_EXTI_CLEAR_IT(TOUCHSCREEN_IRQ_PIN);
-      if(!TS_IsPressed()){
-        // we're currently not pressed, but we just got a touch interrupt
-        // so now we need to update the state to pressed
-        touchscreen_is_pressed = 1;
-        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-      }else{
-        touchscreen_is_pressed = 0;
-        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
-      }
+//      if(!TS_IsPressed()){
+//        // we're currently not pressed, but we just got a touch interrupt
+//        // so now we need to update the state to pressed
+//        touchscreen_is_pressed = 1;
+//        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+//      }else{
+//        touchscreen_is_pressed = 0;
+//        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+//      }
       EXTI->IMR |= (1<<7); // unmask the interrupt
+      __HAL_GPIO_EXTI_CLEAR_IT(TOUCHSCREEN_IRQ_PIN);
 	}
 	// NVIC_EnableIRQ(EXTI9_5_IRQn);
 }

@@ -12,6 +12,19 @@
 #include "Global.h"
 extern SPI_HandleTypeDef  h_lcd_spi;
 //
+//
+// Physical display size
+//
+//need for the gui toolkit config
+#define XSIZE_PHYS  240 // To be adapted to x-screen size
+#define YSIZE_PHYS  320 // To be adapted to y-screen size
+// better names here, and rotate them. The LCD screen natively in portrait orientation
+// but we want to use it in landscape. So the GUI toolkit we give it the native size
+// but in our app we'll use our logical size
+#define LCD_XSIZE YSIZE_PHYS
+#define LCD_YSIZE XSIZE_PHYS
+
+
 #define LCD_SPIx						 SPI1
 #define LCD_SPI_SCK_PIN					 GPIO_PIN_3
 #define LCD_SPI_SCK_PORT				 GPIOB
