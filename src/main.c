@@ -209,17 +209,7 @@ int main(void)
             datax |= byte[1];
             datax >>= 3;
             TOUCHSCREEN_CS_HIGH();
-            HAL_Delay(10);
-            TOUCHSCREEN_CS_LOW();
-            TS_WriteData(0x90); // back to idle
-             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
-                Error_Handler();
-             }
-             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
-                Error_Handler();
-             }
-            TOUCHSCREEN_CS_HIGH();
-            HAL_Delay(10);
+
             TOUCHSCREEN_CS_LOW();
             // read y position
             TS_WriteData(0xD9);
