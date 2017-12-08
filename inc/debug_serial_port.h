@@ -12,6 +12,8 @@
 
 extern UART_HandleTypeDef h_debug_uart;
 
+uint8_t DebugSerialPort_Init();
+
 #ifdef __GNUC__
   /* With GCC, small printf (option LD Linker->Libraries->Small printf
      set to 'Yes') calls __io_putchar() */

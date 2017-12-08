@@ -39,4 +39,5 @@ uint8_t TS_IsPressed();
 void    TS_WriteData(uint8_t data);
 int16_t TS_GetX(uint8_t num_samples_for_average);
 int16_t TS_GetY(uint8_t num_samples_for_average);
+void    TS_SetIdle();
 #endif /* TOUCHSCREEN_H_ */
