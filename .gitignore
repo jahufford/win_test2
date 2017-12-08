@@ -11,6 +11,10 @@ code/Middlewares/ST
 *.exe
 *.o
 *.so
+*.bin
+*.elf
+*.xml
+*.map
 
 # Packages #
 ############
@@ -40,3 +44,4 @@ code/Middlewares/ST
 .Trashes
 ehthumbs.db
 Thumbs.db
+/Debug/

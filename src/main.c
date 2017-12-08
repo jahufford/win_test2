@@ -194,101 +194,10 @@ int main(void)
 //    }
         while(1){
         	HAL_Delay(100);
-            TOUCHSCREEN_CS_LOW();
-            uint8_t byte[2];
-//            // read x position, actually it's the y for the TS, but we've rotated to landscape mode
-//            TS_WriteData(0x99);
-//            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
-//               Error_Handler();
-//            }
-//            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
-//               Error_Handler();
-//            }
-//
-//            TOUCHSCREEN_CS_HIGH();
-//            uint16_t datax = byte[0];
-//            datax <<= 8;
-//            datax |= byte[1];
-//            datax >>= 3;
+            //TOUCHSCREEN_CS_LOW();
             uint16_t datax = TS_GetX(5);
-
-//            TOUCHSCREEN_CS_LOW();
-//            // read y position
-//            TS_WriteData(0xD9);
-//            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
-//               Error_Handler();
-//            }
-//            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
-//               Error_Handler();
-//            }
-//
-//            uint16_t datay = byte[0];
-//            datay <<= 8;
-//            datay |= byte[1];
-//            datay >>= 3;
-//
-//            TS_WriteData(0x90); // back to idle
-//            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
-//               Error_Handler();
-//            }
-//            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
-//               Error_Handler();
-//            }
-//            TOUCHSCREEN_CS_HIGH();
-//            HAL_Delay(100);
-              uint16_t datay = TS_GetY(5);
-//
-//
-//            TOUCHSCREEN_CS_LOW();
-//             // read z1 position
-//             TS_WriteData(0xB9);
-//             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
-//                Error_Handler();
-//             }
-//             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
-//                Error_Handler();
-//             }
-//
-//             uint16_t dataz1 = byte[0];
-//             dataz1 <<= 8;
-//             dataz1 |= byte[1];
-//             dataz1 >>= 3;
-//
-//             TS_WriteData(0x90); // back to idle
-//             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
-//                Error_Handler();
-//             }
-//             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
-//                Error_Handler();
-//             }
-//             TOUCHSCREEN_CS_HIGH();
-//
-//            HAL_Delay(100);
-//
-//
-//            TOUCHSCREEN_CS_LOW();
-//             // read z1 position
-//             TS_WriteData(0x99);
-//             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
-//                Error_Handler();
-//             }
-//             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
-//                Error_Handler();
-//             }
-//
-//             uint16_t dataz2 = byte[0];
-//             dataz2 <<= 8;
-//             dataz2 |= byte[1];
-//             dataz2 >>= 3;
-//
-//             TS_WriteData(0x90); // back to idle
-//             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
-//                Error_Handler();
-//             }
-//             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
-//                Error_Handler();
-//             }
-//             TOUCHSCREEN_CS_HIGH();
+            uint16_t datay = TS_GetY(5);
+            TS_SetIdle();
 
             //printf("X = %d, Y = %d, Z1 = %d, Z2 = %d, zdiff = %d\r\n",datax, datay,dataz1,dataz2,dataz2-dataz1);
             printf("X = %d, Y = %d\r\n",datax, datay);

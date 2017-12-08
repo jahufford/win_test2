@@ -158,20 +158,20 @@ int16_t TS_GetX(uint8_t num_samples_for_average)
     uint8_t bytes[2];
     // read x position, actually it's the y for the TS, but we've rotated to landscape mode
     for(int i=0;i<num_samples_for_average;i++){
-      TOUCHSCREEN_CS_LOW();
-      TS_WriteData(0x99);
-      if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)bytes, 1,0xFFFF) != HAL_OK){
-         Error_Handler();
-      }
-      if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&bytes[1], 1,0xFFFF) != HAL_OK){
-         Error_Handler();
-      }
-      uint16_t datax = bytes[0];
-      datax <<= 8;
-      datax |= bytes[1];
-      datax >>= 3;
-      sum += datax;
-      TOUCHSCREEN_CS_HIGH();
+        TOUCHSCREEN_CS_LOW();
+        TS_WriteData(0x99);
+        if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)bytes, 1,0xFFFF) != HAL_OK){
+           Error_Handler();
+        }
+        if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&bytes[1], 1,0xFFFF) != HAL_OK){
+           Error_Handler();
+        }
+        uint16_t datax = bytes[0];
+        datax <<= 8;
+        datax |= bytes[1];
+        datax >>= 3;
+        sum += datax;
+        TOUCHSCREEN_CS_HIGH();
     }
     uint16_t avg = sum/num_samples_for_average;
     // convert to pixel coordinate
@@ -190,20 +190,20 @@ int16_t TS_GetY(uint8_t num_samples_for_average)
     uint8_t bytes[2];
     // read x position, actually it's the y for the TS, but we've rotated to landscape mode
     for(int i=0;i<num_samples_for_average;i++){
-      TOUCHSCREEN_CS_LOW();
-      TS_WriteData(0xD9);
-      if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)bytes, 1,0xFFFF) != HAL_OK){
-         Error_Handler();
-      }
-      if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&bytes[1], 1,0xFFFF) != HAL_OK){
-         Error_Handler();
-      }
-      uint16_t datax = bytes[0];
-      datax <<= 8;
-      datax |= bytes[1];
-      datax >>= 3;
-      sum += datax;
-      TOUCHSCREEN_CS_HIGH();
+        TOUCHSCREEN_CS_LOW();
+        TS_WriteData(0xD9);
+        if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)bytes, 1,0xFFFF) != HAL_OK){
+           Error_Handler();
+        }
+        if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&bytes[1], 1,0xFFFF) != HAL_OK){
+           Error_Handler();
+        }
+        uint16_t datax = bytes[0];
+        datax <<= 8;
+        datax |= bytes[1];
+        datax >>= 3;
+        sum += datax;
+        TOUCHSCREEN_CS_HIGH();
     }
     uint16_t avg = sum/num_samples_for_average;
     // convert to pixel coordinate
@@ -213,4 +213,18 @@ int16_t TS_GetY(uint8_t num_samples_for_average)
     // if you're pressing outsize the valid area
     pixel = pixel>LCD_YSIZE ? -1 : pixel;
     return (int16_t)pixel;
+}
+
+void TS_SetIdle()
+{
+	uint8_t bytes[2];
+    TOUCHSCREEN_CS_LOW();
+    TS_WriteData(0x90); // back to idle
+    if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)bytes, 1,0xFFFF) != HAL_OK){
+    	Error_Handler();
+    }
+    if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&bytes[1], 1,0xFFFF) != HAL_OK){
+        Error_Handler();
+    }
+    TOUCHSCREEN_CS_HIGH();
 }
