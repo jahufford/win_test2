@@ -99,81 +99,88 @@ int main(void)
 //    //GUI_SetBkColor(GUI_DARKRED);
 //    //GUI_SetColor(LCD_MakeColor(GUI_BLUE));
     //GUI_SetColor(GUI_MAKE_COLOR(GUI_RED));
-    GUI_SetColor(GUI_WHITE);
-    GUI_DrawRect(0,0,319,239);
-    GUI_SetColor(GUI_RED);
-    GUI_FillRect(20,20,80,40);
-    //GUI_SetColor(GUI_MAKE_COLOR(GUI_GREEN));
-    GUI_SetColor(GUI_GREEN);
-    GUI_FillRect(20,50,80,70);
-    GUI_SetColor(GUI_BLUE);
-    GUI_FillRect(20,80,80,100);
-    GUI_SetColor((GUI_ORANGE));
-    GUI_FillRect(20,110,80,120);
-    GUI_SetColor(GUI_RED);
-    GUI_SetBkColor(GUI_BLACK);
-    //GUI_SetBkColorIndex(1);
-	//GUI_SetColorIndex(2);
-    //GUI_Clear();
-    //GUI_SetFont(&GUI_Font20_1);
-    int x = 0;
-    int y = 120;
     uint32_t colors[25] = {GUI_BLUE,GUI_GREEN,GUI_RED, GUI_CYAN,GUI_MAGENTA,GUI_YELLOW,
     					   GUI_LIGHTBLUE,GUI_LIGHTGREEN,GUI_LIGHTRED,GUI_LIGHTCYAN, GUI_LIGHTMAGENTA,
 						   GUI_LIGHTYELLOW,GUI_DARKBLUE,GUI_DARKGREEN,GUI_DARKRED,GUI_DARKCYAN,
 						   GUI_DARKMAGENTA,GUI_DARKYELLOW,GUI_WHITE,GUI_LIGHTGRAY,GUI_GRAY,
 						   GUI_DARKGRAY,GUI_BLACK,GUI_BROWN,GUI_ORANGE};
-    for(int i=0;i<25;i++){
-    	GUI_SetColor(colors[i]);
-    	GUI_FillRect(x,y,x+10,y+20);
-    	x+=10;
+    GUI_SetColor(GUI_WHITE);
+    GUI_DrawRect(0,0,319,239);
+    uint8_t color_index = 0;
+    for(int i=10;i<310/2;i+=10){
+    	GUI_SetColor(colors[color_index]);
+    	color_index++;
+    	color_index%=25;
+    	GUI_DrawRect(i,i,319-i,239-i);
     }
-    GUI_SetColor(GUI_CYAN);
-    GUI_FillRoundedRect(150,30,300,100,10);
-    GUI_SetFont(GUI_FONT_32B_ASCII);
-    //GUI_SetFont(GUI_FONT_COMIC24B_1);
-    GUI_SetColor(GUI_BLUE);
-    GUI_SetBkColor(GUI_GREEN);
-    GUI_DispCharAt('A',3,200);
-    //GUI_DispStringAt("Hi", (LCD_GetXSize()-100)/2, (LCD_GetYSize()-20)/2);
-    GUI_SetBkColor(GUI_DARKCYAN);
-    GUI_DispStringAt("Hello World!", (LCD_GetXSize()-100)/2, 200);
-    GUI_SetColor(GUI_YELLOW);
-    GUI_SetFont(GUI_FONT_COMIC24B_1);
-    GUI_DispStringAt("Hello World!", 95,150);
-    GUI_SetColor(GUI_ORANGE);
-    GUI_FillEllipse(100,100,75,25);
-    GUI_SetColor(GUI_RED);
-    GUI_DrawPie(250,175,50,10,80,0);
-    GUI_SetColor(GUI_BLUE);
-    GUI_DrawPie(250,175,50,81,135,0);
-    GUI_SetColor(GUI_YELLOW);
-    GUI_DrawPie(250,175,50,136,215,0);
-
-    GUI_DispStringAt("Progress bar", 100, 20);
-
-
-    /* Create foreground window */
-    //hWnd = WM_CreateWindow(10, 10, 300, 200, WM_CF_SHOW, cbForegroundWin, 0);
-    PROGBAR_Handle hProgBar;
-    hProgBar = PROGBAR_Create(85, 50, 200, 40, WM_CF_SHOW);
-    PROGBAR_SetBarColor(hProgBar, 0, GUI_YELLOW);
-    PROGBAR_SetBarColor(hProgBar, 1, GUI_RED);
-    PROGBAR_SetValue(hProgBar, 77);
-    PROGBAR_SetFont(hProgBar,GUI_FONT_COMIC24B_1);
-//    BUTTON_Handle btn = BUTTON_CreateEx(30,180,30,15,0,0,WM_CF_SHOW,0);
-//    BUTTON_SetText(btn,"Button");
-    BUTTON_Handle hButton;
-    GUI_SetFont(&GUI_Font8x16);
-    //GUI_DispStringHCenterAt("Click on button...", 160, 90);
-    /* Create the button*/
-    hButton = BUTTON_Create(30, 160, 100, 30, GUI_ID_OK, WM_CF_SHOW);
-    /* Set the button text */
-    BUTTON_SetText(hButton, "Button Up");
-    BUTTON_Handle hButton2;
-    hButton2 = BUTTON_Create(30, 195, 100, 30, GUI_ID_OK, WM_CF_SHOW);
-    BUTTON_SetText(hButton2,"Button Down");
-    BUTTON_SetPressed(hButton2,1);
+//    GUI_SetColor(GUI_RED);
+//    GUI_FillRect(20,20,80,40);
+//    //GUI_SetColor(GUI_MAKE_COLOR(GUI_GREEN));
+//    GUI_SetColor(GUI_GREEN);
+//    GUI_FillRect(20,50,80,70);
+//    GUI_SetColor(GUI_BLUE);
+//    GUI_FillRect(20,80,80,100);
+//    GUI_SetColor((GUI_ORANGE));
+//    GUI_FillRect(20,110,80,120);
+//    GUI_SetColor(GUI_RED);
+//    GUI_SetBkColor(GUI_BLACK);
+//    //GUI_SetBkColorIndex(1);
+//	//GUI_SetColorIndex(2);
+//    //GUI_Clear();
+//    //GUI_SetFont(&GUI_Font20_1);
+//    int x = 0;
+//    int y = 120;
+//    for(int i=0;i<25;i++){
+//    	GUI_SetColor(colors[i]);
+//    	GUI_FillRect(x,y,x+10,y+20);
+//    	x+=10;
+//    }
+//    GUI_SetColor(GUI_CYAN);
+//    GUI_FillRoundedRect(150,30,300,100,10);
+//    GUI_SetFont(GUI_FONT_32B_ASCII);
+//    //GUI_SetFont(GUI_FONT_COMIC24B_1);
+//    GUI_SetColor(GUI_BLUE);
+//    GUI_SetBkColor(GUI_GREEN);
+//    GUI_DispCharAt('A',3,200);
+//    //GUI_DispStringAt("Hi", (LCD_GetXSize()-100)/2, (LCD_GetYSize()-20)/2);
+//    GUI_SetBkColor(GUI_DARKCYAN);
+//    GUI_DispStringAt("Hello World!", (LCD_GetXSize()-100)/2, 200);
+//    GUI_SetColor(GUI_YELLOW);
+//    GUI_SetFont(GUI_FONT_COMIC24B_1);
+//    GUI_DispStringAt("Hello World!", 95,150);
+//    GUI_SetColor(GUI_ORANGE);
+//    GUI_FillEllipse(100,100,75,25);
+//    GUI_SetColor(GUI_RED);
+//    GUI_DrawPie(250,175,50,10,80,0);
+//    GUI_SetColor(GUI_BLUE);
+//    GUI_DrawPie(250,175,50,81,135,0);
+//    GUI_SetColor(GUI_YELLOW);
+//    GUI_DrawPie(250,175,50,136,215,0);
+//
+//    GUI_DispStringAt("Progress bar", 100, 20);
+//
+//
+//    /* Create foreground window */
+//    //hWnd = WM_CreateWindow(10, 10, 300, 200, WM_CF_SHOW, cbForegroundWin, 0);
+//    PROGBAR_Handle hProgBar;
+//    hProgBar = PROGBAR_Create(85, 50, 200, 40, WM_CF_SHOW);
+//    PROGBAR_SetBarColor(hProgBar, 0, GUI_YELLOW);
+//    PROGBAR_SetBarColor(hProgBar, 1, GUI_RED);
+//    PROGBAR_SetValue(hProgBar, 77);
+//    PROGBAR_SetFont(hProgBar,GUI_FONT_COMIC24B_1);
+////    BUTTON_Handle btn = BUTTON_CreateEx(30,180,30,15,0,0,WM_CF_SHOW,0);
+////    BUTTON_SetText(btn,"Button");
+//    BUTTON_Handle hButton;
+//    GUI_SetFont(&GUI_Font8x16);
+//    //GUI_DispStringHCenterAt("Click on button...", 160, 90);
+//    /* Create the button*/
+//    hButton = BUTTON_Create(30, 160, 100, 30, GUI_ID_OK, WM_CF_SHOW);
+//    /* Set the button text */
+//    BUTTON_SetText(hButton, "Button Up");
+//    BUTTON_Handle hButton2;
+//    hButton2 = BUTTON_Create(30, 195, 100, 30, GUI_ID_OK, WM_CF_SHOW);
+//    BUTTON_SetText(hButton2,"Button Down");
+//    BUTTON_SetPressed(hButton2,1);
     WM_Exec();
     GUI_Exec();
     	HAL_Delay(1000);
@@ -188,46 +195,48 @@ int main(void)
         while(1){
         	HAL_Delay(100);
             TOUCHSCREEN_CS_LOW();
-            // read x position, actually it's the y for the TS, but we've rotated to landscape mode
-            TS_WriteData(0x99);
             uint8_t byte[2];
-            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
-               Error_Handler();
-            }
-            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
-               Error_Handler();
-            }
+//            // read x position, actually it's the y for the TS, but we've rotated to landscape mode
+//            TS_WriteData(0x99);
+//            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
+//               Error_Handler();
+//            }
+//            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
+//               Error_Handler();
+//            }
+//
+//            TOUCHSCREEN_CS_HIGH();
+//            uint16_t datax = byte[0];
+//            datax <<= 8;
+//            datax |= byte[1];
+//            datax >>= 3;
+            uint16_t datax = TS_GetX(5);
 
-            uint16_t datax = byte[0];
-            datax <<= 8;
-            datax |= byte[1];
-            datax >>= 3;
-            TOUCHSCREEN_CS_HIGH();
-
-            TOUCHSCREEN_CS_LOW();
-            // read y position
-            TS_WriteData(0xD9);
-            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
-               Error_Handler();
-            }
-            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
-               Error_Handler();
-            }
-
-            uint16_t datay = byte[0];
-            datay <<= 8;
-            datay |= byte[1];
-            datay >>= 3;
-
-            TS_WriteData(0x90); // back to idle
-            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
-               Error_Handler();
-            }
-            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
-               Error_Handler();
-            }
-            TOUCHSCREEN_CS_HIGH();
+//            TOUCHSCREEN_CS_LOW();
+//            // read y position
+//            TS_WriteData(0xD9);
+//            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
+//               Error_Handler();
+//            }
+//            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
+//               Error_Handler();
+//            }
+//
+//            uint16_t datay = byte[0];
+//            datay <<= 8;
+//            datay |= byte[1];
+//            datay >>= 3;
+//
+//            TS_WriteData(0x90); // back to idle
+//            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
+//               Error_Handler();
+//            }
+//            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
+//               Error_Handler();
+//            }
+//            TOUCHSCREEN_CS_HIGH();
 //            HAL_Delay(100);
+              uint16_t datay = TS_GetY(5);
 //
 //
 //            TOUCHSCREEN_CS_LOW();

@@ -29,7 +29,14 @@ extern uint8_t touchscreen_is_pressed;
 #define TOUCHSCREEN_CS_LOW() 	HAL_GPIO_WritePin(TOUCHSCREEN_SPI_CS_PORT,TOUCHSCREEN_SPI_CS_PIN,GPIO_PIN_RESET)
 #define TOUCHSCREEN_CS_HIGH() 	HAL_GPIO_WritePin(TOUCHSCREEN_SPI_CS_PORT,TOUCHSCREEN_SPI_CS_PIN,GPIO_PIN_SET)
 
+#define TOUCHSCREEN_RAW_MAX_Y			 3500
+#define TOUCHSCREEN_RAW_MIN_Y			 260
+#define TOUCHSCREEN_RAW_MAX_X			 3550
+#define TOUCHSCREEN_RAW_MIN_X			 125
+
 uint8_t TS_HardwareInit();
 uint8_t TS_IsPressed();
 void    TS_WriteData(uint8_t data);
+int16_t TS_GetX(uint8_t num_samples_for_average);
+int16_t TS_GetY(uint8_t num_samples_for_average);
 #endif /* TOUCHSCREEN_H_ */

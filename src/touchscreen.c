@@ -6,6 +6,7 @@
  */
 
 #include "touchscreen.h"
+#include "lcd_hardware.h"
 
 SPI_HandleTypeDef  h_touchscreen_spi;
 
@@ -148,4 +149,68 @@ void TS_WriteData(uint8_t data) {
 		Error_Handler();
     }
 	//TOUCHSCREEN_CS_HIGH();
+}
+
+// returns negative number on error
+int16_t TS_GetX(uint8_t num_samples_for_average)
+{
+	uint32_t sum=0;
+    uint8_t bytes[2];
+    // read x position, actually it's the y for the TS, but we've rotated to landscape mode
+    for(int i=0;i<num_samples_for_average;i++){
+      TOUCHSCREEN_CS_LOW();
+      TS_WriteData(0x99);
+      if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)bytes, 1,0xFFFF) != HAL_OK){
+         Error_Handler();
+      }
+      if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&bytes[1], 1,0xFFFF) != HAL_OK){
+         Error_Handler();
+      }
+      uint16_t datax = bytes[0];
+      datax <<= 8;
+      datax |= bytes[1];
+      datax >>= 3;
+      sum += datax;
+      TOUCHSCREEN_CS_HIGH();
+    }
+    uint16_t avg = sum/num_samples_for_average;
+    // convert to pixel coordinate
+    uint32_t pixel = (avg-TOUCHSCREEN_RAW_MIN_X);
+    pixel = (pixel << 8) + (pixel << 6); // multiply pixel by 320
+    pixel /= TOUCHSCREEN_RAW_MAX_X;
+    // if you're pressing outsize the valid area
+    pixel = pixel>LCD_XSIZE ? -1 : pixel;
+    return (int16_t)pixel;
+}
+
+// returns negative number on error
+int16_t TS_GetY(uint8_t num_samples_for_average)
+{
+	uint32_t sum=0;
+    uint8_t bytes[2];
+    // read x position, actually it's the y for the TS, but we've rotated to landscape mode
+    for(int i=0;i<num_samples_for_average;i++){
+      TOUCHSCREEN_CS_LOW();
+      TS_WriteData(0xD9);
+      if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)bytes, 1,0xFFFF) != HAL_OK){
+         Error_Handler();
+      }
+      if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&bytes[1], 1,0xFFFF) != HAL_OK){
+         Error_Handler();
+      }
+      uint16_t datax = bytes[0];
+      datax <<= 8;
+      datax |= bytes[1];
+      datax >>= 3;
+      sum += datax;
+      TOUCHSCREEN_CS_HIGH();
+    }
+    uint16_t avg = sum/num_samples_for_average;
+    // convert to pixel coordinate
+    uint32_t pixel = (avg-TOUCHSCREEN_RAW_MIN_Y);
+    pixel = (pixel << 8) - (pixel << 4); // multiply pixel by 240
+    pixel /= TOUCHSCREEN_RAW_MAX_Y;
+    // if you're pressing outsize the valid area
+    pixel = pixel>LCD_YSIZE ? -1 : pixel;
+    return (int16_t)pixel;
 }
