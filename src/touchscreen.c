@@ -17,6 +17,7 @@ uint8_t TS_HardwareInit()
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 	__HAL_RCC_GPIOB_CLK_ENABLE();
 	__HAL_RCC_GPIOC_CLK_ENABLE();
+	//__HAL_RCC_GPIOF_CLK_ENABLE();
     // set up Touchscreen SPI ports and pins
     // Touchscreen SCK
 	GPIO_InitTypeDef GPIO_InitStruct;
@@ -43,13 +44,15 @@ uint8_t TS_HardwareInit()
     GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
     HAL_GPIO_Init(TOUCHSCREEN_SPI_MOSI_PORT, &GPIO_InitStruct);
 
-    // SPI NSS
+    // SPI chip select
     GPIO_InitStruct.Pin = TOUCHSCREEN_SPI_CS_PIN;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     //GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
     HAL_GPIO_Init(TOUCHSCREEN_SPI_CS_PORT, &GPIO_InitStruct);
+   	HAL_GPIO_WritePin(TOUCHSCREEN_SPI_CS_PORT,TOUCHSCREEN_SPI_CS_PIN,GPIO_PIN_SET);
+   	HAL_GPIO_WritePin(TOUCHSCREEN_SPI_CS_PORT,TOUCHSCREEN_SPI_CS_PIN,GPIO_PIN_RESET);
    	HAL_GPIO_WritePin(TOUCHSCREEN_SPI_CS_PORT,TOUCHSCREEN_SPI_CS_PIN,GPIO_PIN_SET);
 
 
@@ -86,8 +89,10 @@ uint8_t TS_HardwareInit()
    	// set up touchscreen IRQ external input pin
     GPIO_InitStruct.Pin = TOUCHSCREEN_IRQ_PIN;
    	//GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-   	GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+   	//GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+   	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
    	GPIO_InitStruct.Pull = GPIO_NOPULL;
+   	//GPIO_InitStruct.Pull = GPIO_PULLUP;
    	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
    	HAL_GPIO_Init(TOUCHSCREEN_IRQ_PORT, &GPIO_InitStruct);
 
@@ -98,13 +103,13 @@ uint8_t TS_HardwareInit()
     touchscreen_is_pressed = 0;
     NVIC_SetPriority(EXTI9_5_IRQn, 1);
     NVIC_ClearPendingIRQ(EXTI9_5_IRQn);
-    NVIC_EnableIRQ(EXTI9_5_IRQn);
+   // NVIC_EnableIRQ(EXTI9_5_IRQn);
 
     TOUCHSCREEN_SPI_CLK_ENABLE();
 
     h_touchscreen_spi.Instance = TOUCHSCREEN_SPI;
     //h_lcd_spi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
-    h_touchscreen_spi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
+    h_touchscreen_spi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
     h_touchscreen_spi.Init.CLKPhase = SPI_PHASE_1EDGE;
     h_touchscreen_spi.Init.CLKPolarity = SPI_POLARITY_LOW; // might need to be high with 2nd edge
     h_touchscreen_spi.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -121,6 +126,14 @@ uint8_t TS_HardwareInit()
     if(HAL_SPI_Init(&h_touchscreen_spi) != HAL_OK){
     	return 0;
     }
+
+
+//  while(1){
+//    	TOUCHSCREEN_CS_LOW();
+//    	TS_WriteData(0x00);
+//    	TS_WriteData(0x01);
+//    	TOUCHSCREEN_CS_HIGH();
+//    }
 	return 1;
 }
 
@@ -129,3 +142,10 @@ uint8_t TS_IsPressed()
 	return touchscreen_is_pressed;
 }
 
+void TS_WriteData(uint8_t data) {
+	//TOUCHSCREEN_CS_LOW();
+	if(HAL_SPI_Transmit(&h_touchscreen_spi,(uint8_t*)&data, 1,0xFFFF) != HAL_OK){
+		Error_Handler();
+    }
+	//TOUCHSCREEN_CS_HIGH();
+}

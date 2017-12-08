@@ -56,6 +56,7 @@ Purpose     : Display controller configuration (single layer)
 #include "GUIDRV_FlexColor.h"
 #include "ili9341.h"
 #include "lcd_hardware.h"
+#include "touchscreen.h"
 
 /*********************************************************************
 *
@@ -214,8 +215,9 @@ int LCD_X_DisplayDriver(unsigned LayerIndex, unsigned Cmd, void * pData) {
     //
     // ...
 	  //LCD_Set16Bit();
-	  LCD_Hardware_Init();
-	  LCD_Module_Init();
+	  LCD_HardwareInit();
+	  LCD_ModuleInit();
+	  TS_HardwareInit();
     return 0;
   }
   default:

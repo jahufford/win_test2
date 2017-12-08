@@ -16,6 +16,8 @@
 #include "PROGBAR.h"
 #include "BUTTON.h"
 #include "stdlib.h"
+#include "debug_serial_port.h"
+#include "touchscreen.h"
 
 void Error_Handler(void);
 void SystemClock_Config(void);
@@ -71,8 +73,11 @@ int main(void)
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+    //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+
+    DebugSerialPort_Init();
+
     uint32_t tickstart = HAL_GetTick();
     for(int i=0;i<4000000;i++){
     	tickstart = HAL_GetTick();
@@ -94,6 +99,8 @@ int main(void)
 //    //GUI_SetBkColor(GUI_DARKRED);
 //    //GUI_SetColor(LCD_MakeColor(GUI_BLUE));
     //GUI_SetColor(GUI_MAKE_COLOR(GUI_RED));
+    GUI_SetColor(GUI_WHITE);
+    GUI_DrawRect(0,0,319,239);
     GUI_SetColor(GUI_RED);
     GUI_FillRect(20,20,80,40);
     //GUI_SetColor(GUI_MAKE_COLOR(GUI_GREEN));
@@ -178,7 +185,121 @@ int main(void)
 //    	WM_Exec();
 //    	HAL_Delay(1000);
 //    }
+        while(1){
+    //    	for(int i=0;i<200;i++){
+    //    		asm("nop");
+    //    	}
+        	HAL_Delay(100);
+            TOUCHSCREEN_CS_LOW();
+          //	// read y position
+          //	TS_WriteData(0xD9);
+            // read x position
+            //TS_WriteData(0xD9);
+            TS_WriteData(0x99);
+            uint8_t byte[2];
+            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
+               Error_Handler();
+            }
+            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
+               Error_Handler();
+            }
 
+            uint16_t datax = byte[0];
+            datax <<= 8;
+            datax |= byte[1];
+            datax >>= 3;
+            TOUCHSCREEN_CS_HIGH();
+            HAL_Delay(10);
+            TOUCHSCREEN_CS_LOW();
+            TS_WriteData(0x90); // back to idle
+             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
+                Error_Handler();
+             }
+             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
+                Error_Handler();
+             }
+            TOUCHSCREEN_CS_HIGH();
+            HAL_Delay(10);
+            TOUCHSCREEN_CS_LOW();
+            // read y position
+            TS_WriteData(0xD9);
+            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
+               Error_Handler();
+            }
+            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
+               Error_Handler();
+            }
+
+            uint16_t datay = byte[0];
+            datay <<= 8;
+            datay |= byte[1];
+            datay >>= 3;
+
+            TS_WriteData(0x90); // back to idle
+            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
+               Error_Handler();
+            }
+            if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
+               Error_Handler();
+            }
+            TOUCHSCREEN_CS_HIGH();
+//            HAL_Delay(100);
+//
+//
+//            TOUCHSCREEN_CS_LOW();
+//             // read z1 position
+//             TS_WriteData(0xB9);
+//             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
+//                Error_Handler();
+//             }
+//             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
+//                Error_Handler();
+//             }
+//
+//             uint16_t dataz1 = byte[0];
+//             dataz1 <<= 8;
+//             dataz1 |= byte[1];
+//             dataz1 >>= 3;
+//
+//             TS_WriteData(0x90); // back to idle
+//             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
+//                Error_Handler();
+//             }
+//             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
+//                Error_Handler();
+//             }
+//             TOUCHSCREEN_CS_HIGH();
+//
+//            HAL_Delay(100);
+//
+//
+//            TOUCHSCREEN_CS_LOW();
+//             // read z1 position
+//             TS_WriteData(0x99);
+//             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
+//                Error_Handler();
+//             }
+//             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
+//                Error_Handler();
+//             }
+//
+//             uint16_t dataz2 = byte[0];
+//             dataz2 <<= 8;
+//             dataz2 |= byte[1];
+//             dataz2 >>= 3;
+//
+//             TS_WriteData(0x90); // back to idle
+//             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
+//                Error_Handler();
+//             }
+//             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
+//                Error_Handler();
+//             }
+//             TOUCHSCREEN_CS_HIGH();
+
+            //printf("X = %d, Y = %d, Z1 = %d, Z2 = %d, zdiff = %d\r\n",datax, datay,dataz1,dataz2,dataz2-dataz1);
+            printf("X = %d, Y = %d\r\n",datax, datay);
+        }
 	for(;;);
 }
 
