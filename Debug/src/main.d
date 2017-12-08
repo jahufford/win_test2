@@ -70,7 +70,29 @@ src/main.o: ../src/main.c \
  /home/joe/programming/embedded/projects/win_test2/HAL_Driver/Inc/stm32f4xx_hal_fmpi2c.h \
  /home/joe/programming/embedded/projects/win_test2/HAL_Driver/Inc/stm32f4xx_hal_fmpi2c_ex.h \
  /home/joe/programming/embedded/projects/win_test2/HAL_Driver/Inc/stm32f4xx_hal_spdifrx.h \
- /home/joe/programming/embedded/projects/win_test2/Utilities/STM32F4xx-Nucleo/stm32f4xx_nucleo.h
+ /home/joe/programming/embedded/projects/win_test2/Utilities/STM32F4xx-Nucleo/stm32f4xx_nucleo.h \
+ /home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/GUI.h \
+ /home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/GUI_ConfDefaults.h \
+ /home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/Config/GUIConf.h \
+ /home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/GUI_Type.h \
+ /home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/LCD.h \
+ /home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/Global.h \
+ /home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/GUI_Version.h \
+ /home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/WM.h \
+ /home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/WM_GUI.h \
+ /home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/GUI.h \
+ /home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/PROGBAR.h \
+ /home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/WM.h \
+ /home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/DIALOG_Intern.h \
+ /home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/WIDGET.h \
+ /home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/WM_Intern.h \
+ /home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/GUI_Private.h \
+ /home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/LCD_Protected.h \
+ /home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/GUI_Debug.h \
+ /home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/SCROLLBAR.h \
+ /home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/BUTTON.h \
+ /home/joe/programming/embedded/projects/win_test2/inc/debug_serial_port.h \
+ /home/joe/programming/embedded/projects/win_test2/inc/touchscreen.h
 
 /home/joe/programming/embedded/projects/win_test2/CMSIS/device/stm32f4xx.h:
 
@@ -215,3 +237,47 @@ src/main.o: ../src/main.c \
 /home/joe/programming/embedded/projects/win_test2/HAL_Driver/Inc/stm32f4xx_hal_spdifrx.h:
 
 /home/joe/programming/embedded/projects/win_test2/Utilities/STM32F4xx-Nucleo/stm32f4xx_nucleo.h:
+
+/home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/GUI.h:
+
+/home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/GUI_ConfDefaults.h:
+
+/home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/Config/GUIConf.h:
+
+/home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/GUI_Type.h:
+
+/home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/LCD.h:
+
+/home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/Global.h:
+
+/home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/GUI_Version.h:
+
+/home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/WM.h:
+
+/home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/WM_GUI.h:
+
+/home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/GUI.h:
+
+/home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/PROGBAR.h:
+
+/home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/WM.h:
+
+/home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/DIALOG_Intern.h:
+
+/home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/WIDGET.h:
+
+/home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/WM_Intern.h:
+
+/home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/GUI_Private.h:
+
+/home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/LCD_Protected.h:
+
+/home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/GUI_Debug.h:
+
+/home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/SCROLLBAR.h:
+
+/home/joe/programming/embedded/projects/win_test2/Middlewares/ST/STemWin/inc/BUTTON.h:
+
+/home/joe/programming/embedded/projects/win_test2/inc/debug_serial_port.h:
+
+/home/joe/programming/embedded/projects/win_test2/inc/touchscreen.h:

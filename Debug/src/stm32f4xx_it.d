@@ -87,7 +87,8 @@ src/stm32f4xx_it.o: ../src/stm32f4xx_it.c \
  /home/joe/programming/embedded/projects/win_test2/Middlewares/Third_Party/FreeRTOS/Source/include/queue.h \
  /home/joe/programming/embedded/projects/win_test2/Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h \
  /home/joe/programming/embedded/projects/win_test2/Middlewares/Third_Party/FreeRTOS/Source/include/timers.h \
- /home/joe/programming/embedded/projects/win_test2/inc/stm32f4xx_it.h
+ /home/joe/programming/embedded/projects/win_test2/inc/stm32f4xx_it.h \
+ /home/joe/programming/embedded/projects/win_test2/inc/touchscreen.h
 
 /home/joe/programming/embedded/projects/win_test2/HAL_Driver/Inc/stm32f4xx_hal.h:
 
@@ -266,3 +267,5 @@ src/stm32f4xx_it.o: ../src/stm32f4xx_it.c \
 /home/joe/programming/embedded/projects/win_test2/Middlewares/Third_Party/FreeRTOS/Source/include/timers.h:
 
 /home/joe/programming/embedded/projects/win_test2/inc/stm32f4xx_it.h:
+
+/home/joe/programming/embedded/projects/win_test2/inc/touchscreen.h:

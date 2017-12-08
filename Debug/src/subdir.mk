@@ -4,22 +4,31 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../src/debug_serial_port.c \
+../src/lcd_hardware.c \
 ../src/main.c \
 ../src/stm32f4xx_it.c \
 ../src/syscalls.c \
-../src/system_stm32f4xx.c 
+../src/system_stm32f4xx.c \
+../src/touchscreen.c 
 
 OBJS += \
+./src/debug_serial_port.o \
+./src/lcd_hardware.o \
 ./src/main.o \
 ./src/stm32f4xx_it.o \
 ./src/syscalls.o \
-./src/system_stm32f4xx.o 
+./src/system_stm32f4xx.o \
+./src/touchscreen.o 
 
 C_DEPS += \
+./src/debug_serial_port.d \
+./src/lcd_hardware.d \
 ./src/main.d \
 ./src/stm32f4xx_it.d \
 ./src/syscalls.d \
-./src/system_stm32f4xx.d 
+./src/system_stm32f4xx.d \
+./src/touchscreen.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
