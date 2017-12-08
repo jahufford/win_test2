@@ -186,15 +186,9 @@ int main(void)
 //    	HAL_Delay(1000);
 //    }
         while(1){
-    //    	for(int i=0;i<200;i++){
-    //    		asm("nop");
-    //    	}
         	HAL_Delay(100);
             TOUCHSCREEN_CS_LOW();
-          //	// read y position
-          //	TS_WriteData(0xD9);
-            // read x position
-            //TS_WriteData(0xD9);
+            // read x position, actually it's the y for the TS, but we've rotated to landscape mode
             TS_WriteData(0x99);
             uint8_t byte[2];
             if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
