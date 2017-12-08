@@ -64,7 +64,7 @@ uint8_t TS_HardwareInit()
    	GPIO_InitStruct.Pull = GPIO_NOPULL;
    	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
    	//GPIO_InitStruct.Alternate = GPIO_AF1_TIM1;
-   	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+   	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
    	 // generate interrupt when button is pressed
 //   	     //SYSCFG_IEXTICR4;
