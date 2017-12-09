@@ -104,7 +104,7 @@ uint8_t TS_HardwareInit()
     touchscreen_is_pressed = 0;
     NVIC_SetPriority(EXTI9_5_IRQn, 1);
     NVIC_ClearPendingIRQ(EXTI9_5_IRQn);
-    //NVIC_EnableIRQ(EXTI9_5_IRQn);
+    NVIC_EnableIRQ(EXTI9_5_IRQn);
 
     TOUCHSCREEN_SPI_CLK_ENABLE();
 
