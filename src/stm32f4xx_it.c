@@ -108,47 +108,7 @@ void EXTI9_5_IRQHandler(void)
       // SER/~DFR
       // PD1
       // PD0
-      TOUCHSCREEN_CS_LOW();
-      // read x position, actually it's the y for the TS, but we've rotated to landscape mode
-      TS_WriteData(0x99);
-      uint8_t byte[2];
-      if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
-         Error_Handler();
-      }
-      if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
-         Error_Handler();
-      }
-      TOUCHSCREEN_CS_HIGH();
 
-      uint16_t datax = byte[0];
-      datax <<= 8;
-      datax |= byte[1];
-      datax >>= 3;
-
-      // read y position
-      TOUCHSCREEN_CS_LOW();
-      TS_WriteData(0xD9);
-      if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
-         Error_Handler();
-      }
-      if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
-         Error_Handler();
-      }
-      TOUCHSCREEN_CS_HIGH();
-      uint16_t datay = byte[0];
-      datay <<= 8;
-      datay |= byte[1];
-      datay >>= 3;
-
-      TOUCHSCREEN_CS_LOW();
-      TS_WriteData(0x90); // back to idle
-      if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)byte, 1,0xFFFF) != HAL_OK){
-         Error_Handler();
-      }
-      if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&byte[1], 1,0xFFFF) != HAL_OK){
-         Error_Handler();
-      }
-      TOUCHSCREEN_CS_HIGH();
       //printf("X = %d, Y = %d\r\n",datax, datay);
       // if it's the touchscreen's irq line
         //__HAL_GPIO_EXTI_CLEAR_IT(TOUCHSCREEN_IRQ_PIN);

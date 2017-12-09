@@ -191,17 +191,17 @@ int main(void)
 //    	BUTTON_SetPressed(hButton,0);
 //    	WM_Exec();
 //    	HAL_Delay(1000);
-//    }
-        while(1){
-        	HAL_Delay(100);
-            //TOUCHSCREEN_CS_LOW();
-            uint16_t datax = TS_GetX(5);
-            uint16_t datay = TS_GetY(5);
-            TS_SetIdle();
-
-            //printf("X = %d, Y = %d, Z1 = %d, Z2 = %d, zdiff = %d\r\n",datax, datay,dataz1,dataz2,dataz2-dataz1);
-            printf("X = %d, Y = %d\r\n",datax, datay);
-        }
+////    }
+//        while(1){
+//        	HAL_Delay(100);
+//            //TOUCHSCREEN_CS_LOW();
+//            uint16_t datax = TS_GetX(5);
+//            uint16_t datay = TS_GetY(5);
+//            TS_SetIdle();
+//
+//            //printf("X = %d, Y = %d, Z1 = %d, Z2 = %d, zdiff = %d\r\n",datax, datay,dataz1,dataz2,dataz2-dataz1);
+//            printf("X = %d, Y = %d\r\n",datax, datay);
+//        }
 	for(;;);
 }
 
