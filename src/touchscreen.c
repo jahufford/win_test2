@@ -56,47 +56,14 @@ uint8_t TS_HardwareInit()
    	HAL_GPIO_WritePin(TOUCHSCREEN_SPI_CS_PORT,TOUCHSCREEN_SPI_CS_PIN,GPIO_PIN_RESET);
    	HAL_GPIO_WritePin(TOUCHSCREEN_SPI_CS_PORT,TOUCHSCREEN_SPI_CS_PIN,GPIO_PIN_SET);
 
-
-   	// set up the button
-    GPIO_InitStruct.Pin = GPIO_PIN_13;
-   	//GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-   	//GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
-   	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-   	GPIO_InitStruct.Pull = GPIO_NOPULL;
-   	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-   	//GPIO_InitStruct.Alternate = GPIO_AF1_TIM1;
-   	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-   	 // generate interrupt when button is pressed
-//   	     //SYSCFG_IEXTICR4;
-    volatile uint32_t reg;
-    reg = SYSCFG->EXTICR[3];
-    //reg = 0xFFFFFFFF;
-    reg &= ~(0xF << 4);
-    //reg |= (0x2 << 4);
-    reg |= (SYSCFG_EXTICR4_EXTI13_PC);
-    //reg |= (SYSCFG_EXTICR4_EXTI13_PB);
-    SYSCFG->EXTICR[3] = reg;
-//    EXTI->RTSR &= ~(1<<13);
-//    //EXTI->FTSR |= (1<<13);
-//    EXTI->FTSR |= EXTI_FTSR_TR13;
-//    //EXTI->IMR |= (1<<13);
-//    EXTI->IMR |= EXTI_IMR_MR13;
-    NVIC_SetPriority(EXTI15_10_IRQn, 1);
-    NVIC_ClearPendingIRQ(EXTI15_10_IRQn);
-    NVIC_EnableIRQ(EXTI15_10_IRQn);
-
-
    	// set up touchscreen IRQ external input pin
     GPIO_InitStruct.Pin = TOUCHSCREEN_IRQ_PIN;
-   	//GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-   	//GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
    	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
    	GPIO_InitStruct.Pull = GPIO_NOPULL;
-   	//GPIO_InitStruct.Pull = GPIO_PULLUP;
    	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
    	HAL_GPIO_Init(TOUCHSCREEN_IRQ_PORT, &GPIO_InitStruct);
 
+   	uint32_t reg;
     reg = SYSCFG->EXTICR[1];
     reg &= ~(SYSCFG_EXTICR2_EXTI7_Msk);  // ~(0xF << 12)
     reg |= (SYSCFG_EXTICR2_EXTI7_PA);
@@ -119,7 +86,8 @@ uint8_t TS_HardwareInit()
     h_touchscreen_spi.Init.Direction = SPI_DIRECTION_2LINES;
     h_touchscreen_spi.Init.FirstBit = SPI_FIRSTBIT_MSB;
     h_touchscreen_spi.Init.Mode = SPI_MODE_MASTER;
-    h_touchscreen_spi.Init.NSS = SPI_NSS_HARD_OUTPUT;
+    //h_touchscreen_spi.Init.NSS = SPI_NSS_HARD_OUTPUT;
+    h_touchscreen_spi.Init.NSS = SPI_NSS_SOFT;
     //h_lcd_spi.Init.NSS = SPI_NSS_SOFT;
     h_touchscreen_spi.Init.TIMode = SPI_TIMODE_DISABLE;
     h_touchscreen_spi.State = HAL_SPI_STATE_RESET;
@@ -128,13 +96,6 @@ uint8_t TS_HardwareInit()
     	return 0;
     }
 
-
-//  while(1){
-//    	TOUCHSCREEN_CS_LOW();
-//    	TS_WriteData(0x00);
-//    	TS_WriteData(0x01);
-//    	TOUCHSCREEN_CS_HIGH();
-//    }
 	return 1;
 }
 
@@ -144,11 +105,9 @@ uint8_t TS_IsPressed()
 }
 
 void TS_WriteData(uint8_t data) {
-	//TOUCHSCREEN_CS_LOW();
 	if(HAL_SPI_Transmit(&h_touchscreen_spi,(uint8_t*)&data, 1,0xFFFF) != HAL_OK){
 		Error_Handler();
     }
-	//TOUCHSCREEN_CS_HIGH();
 }
 
 // returns negative number on error
@@ -156,6 +115,7 @@ int16_t TS_GetX(uint8_t num_samples_for_average)
 {
 	uint32_t sum=0;
     uint8_t bytes[2];
+    EXTI->IMR &= ~(TOUCHSCREEN_IRQ_PIN); // mask the interrupt because during reads the irq moves around
     // read x position, actually it's the y for the TS, but we've rotated to landscape mode
     for(int i=0;i<num_samples_for_average;i++){
         TOUCHSCREEN_CS_LOW();
@@ -166,20 +126,21 @@ int16_t TS_GetX(uint8_t num_samples_for_average)
         if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&bytes[1], 1,0xFFFF) != HAL_OK){
            Error_Handler();
         }
+        TOUCHSCREEN_CS_HIGH();
         uint16_t datax = bytes[0];
         datax <<= 8;
         datax |= bytes[1];
         datax >>= 3;
         sum += datax;
-        TOUCHSCREEN_CS_HIGH();
     }
+    EXTI->IMR |= TOUCHSCREEN_IRQ_PIN; // unmask the interrupt
     uint16_t avg = sum/num_samples_for_average;
     // convert to pixel coordinate
     uint32_t pixel = (avg-TOUCHSCREEN_RAW_MIN_X);
     pixel = (pixel << 8) + (pixel << 6); // multiply pixel by 320
     pixel /= TOUCHSCREEN_RAW_MAX_X;
-    // if you're pressing outsize the valid area
-    pixel = pixel>LCD_XSIZE ? -1 : pixel;
+    // if you're pressing outside the valid area
+    pixel = pixel>=LCD_XSIZE ? -1 : pixel;
     return (int16_t)pixel;
 }
 
@@ -188,6 +149,7 @@ int16_t TS_GetY(uint8_t num_samples_for_average)
 {
 	uint32_t sum=0;
     uint8_t bytes[2];
+    EXTI->IMR &= ~(TOUCHSCREEN_IRQ_PIN); // mask the interrupt because during reads the irq moves around
     // read x position, actually it's the y for the TS, but we've rotated to landscape mode
     for(int i=0;i<num_samples_for_average;i++){
         TOUCHSCREEN_CS_LOW();
@@ -198,33 +160,71 @@ int16_t TS_GetY(uint8_t num_samples_for_average)
         if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&bytes[1], 1,0xFFFF) != HAL_OK){
            Error_Handler();
         }
+        TOUCHSCREEN_CS_HIGH();
         uint16_t datax = bytes[0];
         datax <<= 8;
         datax |= bytes[1];
         datax >>= 3;
         sum += datax;
-        TOUCHSCREEN_CS_HIGH();
     }
+    EXTI->IMR |= TOUCHSCREEN_IRQ_PIN; // unmask the interrupt
     uint16_t avg = sum/num_samples_for_average;
     // convert to pixel coordinate
     uint32_t pixel = (avg-TOUCHSCREEN_RAW_MIN_Y);
     pixel = (pixel << 8) - (pixel << 4); // multiply pixel by 240
     pixel /= TOUCHSCREEN_RAW_MAX_Y;
-    // if you're pressing outsize the valid area
-    pixel = pixel>LCD_YSIZE ? -1 : pixel;
+    // if you're pressing outside the valid area
+    pixel = pixel>=LCD_YSIZE ? -1 : pixel;
     return (int16_t)pixel;
 }
 
 void TS_SetIdle()
 {
 	uint8_t bytes[2];
-    TOUCHSCREEN_CS_LOW();
-    TS_WriteData(0x90); // back to idle
+    EXTI->IMR &= ~(TOUCHSCREEN_IRQ_PIN); // mask the interrupt because during reads the irq moves around
+	TOUCHSCREEN_CS_LOW();
+    //TS_WriteData(0x90); // back to idle
+    TS_WriteData(0xD0); // back to idle
     if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)bytes, 1,0xFFFF) != HAL_OK){
     	Error_Handler();
     }
     if(HAL_SPI_Receive(&h_touchscreen_spi,(uint8_t*)&bytes[1], 1,0xFFFF) != HAL_OK){
         Error_Handler();
     }
+    // one nop makes a delay of about 100ns from when the final clock goes low to
+    // when the CS line goes high
+    // but 8 nop's is 200ns
+    // but for(int i=0;i<1;i++){asm("nop");} takes 400ns, go figure. Be a good spot to test
+    // if compilers optimizations makes them equivalent
+    // this bit of a delay is needed to keep the PENIRQ line of the touchscreen functioning
+    // no idea why this is needed, but otherwise the irq line quits working
+    for(int i=0;i<1;i++){
+    	asm("nop");
+    }
+    EXTI->IMR |= TOUCHSCREEN_IRQ_PIN; // unmask the interrupt
     TOUCHSCREEN_CS_HIGH();
+}
+
+void TS_StartRead()
+{
+	// this keeps the IRQ pin low while reading from the touchscreen controller
+    GPIO_InitTypeDef GPIO_InitStruct;
+    GPIO_InitStruct.Pin = TOUCHSCREEN_IRQ_PIN;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(TOUCHSCREEN_IRQ_PORT, &GPIO_InitStruct);
+    HAL_GPIO_WritePin(TOUCHSCREEN_IRQ_PORT,TOUCHSCREEN_IRQ_PIN,GPIO_PIN_RESET);
+}
+
+void TS_EndRead()
+{
+	// let the IRQ pin act as a rising edge interrupt line to detect
+	// when a press if lifted
+    GPIO_InitTypeDef GPIO_InitStruct;
+    GPIO_InitStruct.Pin = TOUCHSCREEN_IRQ_PIN;
+    GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(TOUCHSCREEN_IRQ_PORT, &GPIO_InitStruct);
 }

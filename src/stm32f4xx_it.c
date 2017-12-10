@@ -99,32 +99,20 @@ void EXTI9_5_IRQHandler(void)
 	// handle touchscreen interrupt
 	if(__HAL_GPIO_EXTI_GET_IT(TOUCHSCREEN_IRQ_PIN)){
       EXTI->IMR &= ~(1<<7); // mask the interrupt
-    //	NVIC_DisableIRQ(EXTI9_5_IRQn);
-      // start bit
-      // A2
-      // A1
-      // A0
-      // Mode
-      // SER/~DFR
-      // PD1
-      // PD0
-
-      //printf("X = %d, Y = %d\r\n",datax, datay);
-      // if it's the touchscreen's irq line
-        //__HAL_GPIO_EXTI_CLEAR_IT(TOUCHSCREEN_IRQ_PIN);
-//      if(!TS_IsPressed()){
-//        // we're currently not pressed, but we just got a touch interrupt
-//        // so now we need to update the state to pressed
-//        touchscreen_is_pressed = 1;
-//        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-//      }else{
-//        touchscreen_is_pressed = 0;
-//        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
-//      }
+      if(touchscreen_is_pressed){
+    	  EXTI->RTSR &= ~(TOUCHSCREEN_IRQ_PIN); // turn off rising egge
+    	  EXTI->FTSR |= TOUCHSCREEN_IRQ_PIN; // turn on falling edge
+          touchscreen_is_pressed = 0;
+      }else{
+    	  EXTI->FTSR &= ~(TOUCHSCREEN_IRQ_PIN); // turn off falling edge
+    	  EXTI->RTSR |= (TOUCHSCREEN_IRQ_PIN);
+          touchscreen_is_pressed = 1;
+          // TODO
+          // read x y coordinates, and insert to PID queue of the window manager
+      }
       EXTI->IMR |= (1<<7); // unmask the interrupt
       __HAL_GPIO_EXTI_CLEAR_IT(TOUCHSCREEN_IRQ_PIN);
 	}
-	// NVIC_EnableIRQ(EXTI9_5_IRQn);
 }
 void EXTI15_10_IRQHandler(void)
 {
