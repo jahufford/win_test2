@@ -229,6 +229,8 @@ int main(void)
     uint32_t last_y = rect.y+15;
     uint32_t touch_offset_x;
     uint32_t touch_offset_y;
+    int delta;
+
 	for(;;){
         HAL_Delay(100);
 		if(TS_IsPressed()){
@@ -244,20 +246,37 @@ int main(void)
                       touch_offset_x = x-rect.x;
                       touch_offset_y = y-rect.y;
                       first_response = 0;
+                    }else{
+                    	// it's movement
+                    	delta = last_x - x;
                     }
 					// erase old rect and crosshairs
 					GUI_SetColor(GUI_BLACK);
 					GUI_DrawRect(rect.x,rect.y,rect.x+rect.width,rect.y+rect.height);
 					GUI_DrawHLine(last_y,rect.x,rect.x+rect.width);
+					GUI_DrawVLine(last_x,rect.y,rect.y+rect.height);
 
-					rect.x = x-touch_offset_x;
-					rect.y = y-touch_offset_y;
+					if((int)x - (int)touch_offset_x <= 0){
+						rect.x=1;
+					}else if( (int)x-(int)touch_offset_x+rect.width >=318){
+						rect.x = 319-rect.width-1;
+					}else{
+						rect.x = x-touch_offset_x;
+					}
 
+					if((int)y - (int)touch_offset_y <= 0){
+						rect.y=1;
+					}else if( (int)y-(int)touch_offset_y+rect.height >= 238){
+						rect.y = 239-rect.height-1;
+					}else{
+                        rect.y = y-touch_offset_y;
+					}
 					GUI_SetColor(GUI_GREEN);
 					GUI_DrawRect(rect.x,rect.y,rect.x+rect.width,rect.y+rect.height);
 
 					GUI_SetColor(GUI_RED);
 					GUI_DrawHLine(y,rect.x,rect.x+rect.width);
+					GUI_DrawVLine(x,rect.y,rect.y+rect.height);
 				}
 				last_x = x;
 				last_y = y;
