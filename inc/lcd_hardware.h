@@ -36,8 +36,6 @@ extern SPI_HandleTypeDef  h_lcd_spi;
 #define LCD_SPI_NSS_PORT				 GPIOB
 #define LCD_SPI_DC_PIN					 GPIO_PIN_8
 #define LCD_SPI_DC_PORT                  GPIOA
-//#define LCD_RESET_PIN					 GPIO_PIN_7
-//#define LCD_RESET_PORT					 GPIOC
 #define LCD_RESET_PIN					 GPIO_PIN_6
 #define LCD_RESET_PORT					 GPIOB
 #define LCD_SPI_CLK_ENABLE()			 __HAL_RCC_SPI1_CLK_ENABLE()
