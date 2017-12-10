@@ -245,16 +245,19 @@ int main(void)
                       touch_offset_y = y-rect.y;
                       first_response = 0;
                     }
-					// erase old rect
-
+					// erase old rect and crosshairs
 					GUI_SetColor(GUI_BLACK);
 					GUI_DrawRect(rect.x,rect.y,rect.x+rect.width,rect.y+rect.height);
+					GUI_DrawHLine(last_y,rect.x,rect.x+rect.width);
 
 					rect.x = x-touch_offset_x;
 					rect.y = y-touch_offset_y;
 
 					GUI_SetColor(GUI_GREEN);
 					GUI_DrawRect(rect.x,rect.y,rect.x+rect.width,rect.y+rect.height);
+
+					GUI_SetColor(GUI_RED);
+					GUI_DrawHLine(y,rect.x,rect.x+rect.width);
 				}
 				last_x = x;
 				last_y = y;
