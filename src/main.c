@@ -243,6 +243,11 @@ int main(void)
 			if( x > 0 && y > 0){ // if valid coordinate reads
 				if(InRect(x,y,&rect)){
                     if(first_response){
+//                      GUI_SetColor(GUI_BLACK);
+//                      GUI_FillRect(1,1,318,238);
+                    	LCD_FillScreen2(0);
+                    	GUI_SetColor(GUI_WHITE);
+                    	GUI_DrawRect(0,0,319,239);
                       touch_offset_x = x-rect.x;
                       touch_offset_y = y-rect.y;
                       first_response = 0;
