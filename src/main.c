@@ -54,6 +54,21 @@ static void cbForegroundWin(WM_MESSAGE * pMsg) {
 }
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
+
+struct Rectangle{
+	uint32_t x;
+	uint32_t y;
+	uint32_t width;
+	uint32_t height;
+};
+
+uint8_t InRect(uint32_t x,uint32_t y, struct Rectangle *rect){
+	if(x>=rect->x && x<=rect->x+rect->width && y>=rect->y && y<=rect->y+rect->height){
+		return 1;
+	}
+	return 0;
+}
+
 int main(void)
 {
 
@@ -115,76 +130,76 @@ int main(void)
 //    	color_index%=25;
 //    	GUI_DrawRect(i,i,319-i,239-i);
 //    }
-    GUI_SetColor(GUI_RED);
-    GUI_FillRect(20,20,80,40);
-    //GUI_SetColor(GUI_MAKE_COLOR(GUI_GREEN));
-    GUI_SetColor(GUI_GREEN);
-    GUI_FillRect(20,50,80,70);
-    GUI_SetColor(GUI_BLUE);
-    GUI_FillRect(20,80,80,100);
-    GUI_SetColor((GUI_ORANGE));
-    GUI_FillRect(20,110,80,120);
-    GUI_SetColor(GUI_RED);
-    GUI_SetBkColor(GUI_BLACK);
-    //GUI_SetBkColorIndex(1);
-	//GUI_SetColorIndex(2);
-    //GUI_Clear();
-    //GUI_SetFont(&GUI_Font20_1);
-    int x = 0;
-    int y = 120;
-    for(int i=0;i<25;i++){
-    	GUI_SetColor(colors[i]);
-    	GUI_FillRect(x,y,x+10,y+20);
-    	x+=10;
-    }
-    GUI_SetColor(GUI_CYAN);
-    GUI_FillRoundedRect(150,30,300,100,10);
-    GUI_SetFont(GUI_FONT_32B_ASCII);
-    //GUI_SetFont(GUI_FONT_COMIC24B_1);
-    GUI_SetColor(GUI_BLUE);
-    GUI_SetBkColor(GUI_GREEN);
-    GUI_DispCharAt('A',3,200);
-    //GUI_DispStringAt("Hi", (LCD_GetXSize()-100)/2, (LCD_GetYSize()-20)/2);
-    GUI_SetBkColor(GUI_DARKCYAN);
-    GUI_DispStringAt("Hello World!", (LCD_GetXSize()-100)/2, 200);
-    GUI_SetColor(GUI_YELLOW);
-    GUI_SetFont(GUI_FONT_COMIC24B_1);
-    GUI_DispStringAt("Hello World!", 95,150);
-    GUI_SetColor(GUI_ORANGE);
-    GUI_FillEllipse(100,100,75,25);
-    GUI_SetColor(GUI_RED);
-    GUI_DrawPie(250,175,50,10,80,0);
-    GUI_SetColor(GUI_BLUE);
-    GUI_DrawPie(250,175,50,81,135,0);
-    GUI_SetColor(GUI_YELLOW);
-    GUI_DrawPie(250,175,50,136,215,0);
-
-    GUI_DispStringAt("Progress bar", 100, 20);
-
-
-    /* Create foreground window */
-    //hWnd = WM_CreateWindow(10, 10, 300, 200, WM_CF_SHOW, cbForegroundWin, 0);
-    PROGBAR_Handle hProgBar;
-    hProgBar = PROGBAR_Create(85, 50, 200, 40, WM_CF_SHOW);
-    PROGBAR_SetBarColor(hProgBar, 0, GUI_YELLOW);
-    PROGBAR_SetBarColor(hProgBar, 1, GUI_RED);
-    PROGBAR_SetValue(hProgBar, 77);
-    PROGBAR_SetFont(hProgBar,GUI_FONT_COMIC24B_1);
-//    BUTTON_Handle btn = BUTTON_CreateEx(30,180,30,15,0,0,WM_CF_SHOW,0);
-//    BUTTON_SetText(btn,"Button");
-    BUTTON_Handle hButton;
-    GUI_SetFont(&GUI_Font8x16);
-    //GUI_DispStringHCenterAt("Click on button...", 160, 90);
-    /* Create the button*/
-    hButton = BUTTON_Create(30, 160, 100, 30, GUI_ID_OK, WM_CF_SHOW);
-    /* Set the button text */
-    BUTTON_SetText(hButton, "Button Up");
-    BUTTON_Handle hButton2;
-    hButton2 = BUTTON_Create(30, 195, 100, 30, GUI_ID_OK, WM_CF_SHOW);
-    BUTTON_SetText(hButton2,"Button Down");
-    BUTTON_SetPressed(hButton2,1);
-    WM_Exec();
-    GUI_Exec();
+//    GUI_SetColor(GUI_RED);
+//    GUI_FillRect(20,20,80,40);
+//    //GUI_SetColor(GUI_MAKE_COLOR(GUI_GREEN));
+//    GUI_SetColor(GUI_GREEN);
+//    GUI_FillRect(20,50,80,70);
+//    GUI_SetColor(GUI_BLUE);
+//    GUI_FillRect(20,80,80,100);
+//    GUI_SetColor((GUI_ORANGE));
+//    GUI_FillRect(20,110,80,120);
+//    GUI_SetColor(GUI_RED);
+//    GUI_SetBkColor(GUI_BLACK);
+//    //GUI_SetBkColorIndex(1);
+//	//GUI_SetColorIndex(2);
+//    //GUI_Clear();
+//    //GUI_SetFont(&GUI_Font20_1);
+//    int x = 0;
+//    int y = 120;
+//    for(int i=0;i<25;i++){
+//    	GUI_SetColor(colors[i]);
+//    	GUI_FillRect(x,y,x+10,y+20);
+//    	x+=10;
+//    }
+//    GUI_SetColor(GUI_CYAN);
+//    GUI_FillRoundedRect(150,30,300,100,10);
+//    GUI_SetFont(GUI_FONT_32B_ASCII);
+//    //GUI_SetFont(GUI_FONT_COMIC24B_1);
+//    GUI_SetColor(GUI_BLUE);
+//    GUI_SetBkColor(GUI_GREEN);
+//    GUI_DispCharAt('A',3,200);
+//    //GUI_DispStringAt("Hi", (LCD_GetXSize()-100)/2, (LCD_GetYSize()-20)/2);
+//    GUI_SetBkColor(GUI_DARKCYAN);
+//    GUI_DispStringAt("Hello World!", (LCD_GetXSize()-100)/2, 200);
+//    GUI_SetColor(GUI_YELLOW);
+//    GUI_SetFont(GUI_FONT_COMIC24B_1);
+//    GUI_DispStringAt("Hello World!", 95,150);
+//    GUI_SetColor(GUI_ORANGE);
+//    GUI_FillEllipse(100,100,75,25);
+//    GUI_SetColor(GUI_RED);
+//    GUI_DrawPie(250,175,50,10,80,0);
+//    GUI_SetColor(GUI_BLUE);
+//    GUI_DrawPie(250,175,50,81,135,0);
+//    GUI_SetColor(GUI_YELLOW);
+//    GUI_DrawPie(250,175,50,136,215,0);
+//
+//    GUI_DispStringAt("Progress bar", 100, 20);
+//
+//
+//    /* Create foreground window */
+//    //hWnd = WM_CreateWindow(10, 10, 300, 200, WM_CF_SHOW, cbForegroundWin, 0);
+//    PROGBAR_Handle hProgBar;
+//    hProgBar = PROGBAR_Create(85, 50, 200, 40, WM_CF_SHOW);
+//    PROGBAR_SetBarColor(hProgBar, 0, GUI_YELLOW);
+//    PROGBAR_SetBarColor(hProgBar, 1, GUI_RED);
+//    PROGBAR_SetValue(hProgBar, 77);
+//    PROGBAR_SetFont(hProgBar,GUI_FONT_COMIC24B_1);
+////    BUTTON_Handle btn = BUTTON_CreateEx(30,180,30,15,0,0,WM_CF_SHOW,0);
+////    BUTTON_SetText(btn,"Button");
+//    BUTTON_Handle hButton;
+//    GUI_SetFont(&GUI_Font8x16);
+//    //GUI_DispStringHCenterAt("Click on button...", 160, 90);
+//    /* Create the button*/
+//    hButton = BUTTON_Create(30, 160, 100, 30, GUI_ID_OK, WM_CF_SHOW);
+//    /* Set the button text */
+//    BUTTON_SetText(hButton, "Button Up");
+//    BUTTON_Handle hButton2;
+//    hButton2 = BUTTON_Create(30, 195, 100, 30, GUI_ID_OK, WM_CF_SHOW);
+//    BUTTON_SetText(hButton2,"Button Down");
+//    BUTTON_SetPressed(hButton2,1);
+//    WM_Exec();
+//    GUI_Exec();
 	//HAL_Delay(1000);
 //    for(;;){
 //    	BUTTON_SetPressed(hButton,1);
@@ -204,6 +219,16 @@ int main(void)
 //            //printf("X = %d, Y = %d, Z1 = %d, Z2 = %d, zdiff = %d\r\n",datax, datay,dataz1,dataz2,dataz2-dataz1);
 //            printf("X = %d, Y = %d\r\n",datax, datay);
 //        }
+
+    struct Rectangle rect = {50,50,150,100};
+    GUI_SetColor(GUI_GREEN);
+    GUI_DrawRect(rect.x,rect.y,rect.x+rect.width,rect.y+rect.height);
+
+    uint8_t first_response;
+    uint32_t last_x = rect.x+15;
+    uint32_t last_y = rect.y+15;
+    uint32_t touch_offset_x;
+    uint32_t touch_offset_y;
 	for(;;){
         HAL_Delay(100);
 		if(TS_IsPressed()){
@@ -214,8 +239,29 @@ int main(void)
 			TS_EndRead();
 
 			if( x > 0 && y > 0){ // if valid coordinate reads
-                printf("X=%d Y=%d\r\n", x,y);
+				if(InRect(x,y,&rect)){
+                    if(first_response){
+                      touch_offset_x = x-rect.x;
+                      touch_offset_y = y-rect.y;
+                      first_response = 0;
+                    }
+					// erase old rect
+
+					GUI_SetColor(GUI_BLACK);
+					GUI_DrawRect(rect.x,rect.y,rect.x+rect.width,rect.y+rect.height);
+
+					rect.x = x-touch_offset_x;
+					rect.y = y-touch_offset_y;
+
+					GUI_SetColor(GUI_GREEN);
+					GUI_DrawRect(rect.x,rect.y,rect.x+rect.width,rect.y+rect.height);
+				}
+				last_x = x;
+				last_y = y;
+				printf("X=%d Y=%d\r\n", x,y);
             }
+		}else{
+			first_response = 1;
 		}
 	}
 }
