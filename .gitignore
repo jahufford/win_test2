@@ -9,6 +9,7 @@ code/Middlewares/ST
 *.class
 *.dll
 *.exe
+*.a
 *.o
 *.so
 *.bin

@@ -42,7 +42,6 @@ void LCD_WriteData(U16 Data)
 	uint8_t *p = (uint8_t*)&Data;
 	LCD_CS_LOW();
 	LCD_DC_HIGH();
-//	if(Data&0xFF00){
 	if(last_reg_command == 0x2C){ // write to graphic ram
         if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p+1), 1,0xFFFF) != HAL_OK){
             Error_Handler();
