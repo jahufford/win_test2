@@ -80,27 +80,24 @@ int main(void)
     DebugSerialPort_Init();
     Button_Init();
 
-    uint32_t tickstart = HAL_GetTick();
-    for(int i=0;i<4000000;i++){
-    	tickstart = HAL_GetTick();
-    }
     asm("nop");
     volatile int ret;
     ret = GUI_Init();
+
     asm("nop");
-//    GUI_SetFont(&GUI_Font8x16);
-//    GUI_DispString("Hello world!");
-//    GUI_DispDecAt( 27, 20,20,4);
+    GUI_SetFont(&GUI_Font8x16);
+    GUI_DispString("Hello world!");
+    GUI_DispDecAt( 27, 20,20,4);
 
 
-    //volatile int x = GUI_IsInitialized();
+//    volatile int x = GUI_IsInitialized();
+    GUI_SetBkColor(GUI_DARKRED);
+    GUI_Clear();
+    asm("nop");
+    //GUI_FillRect(20,20,280,150);
     //GUI_SetBkColor(GUI_DARKRED);
-//    GUI_Clear();
-//    asm("nop");
-//    //GUI_FillRect(20,20,280,150);
-//    //GUI_SetBkColor(GUI_DARKRED);
-//    //GUI_SetColor(LCD_MakeColor(GUI_BLUE));
-    //GUI_SetColor(GUI_MAKE_COLOR(GUI_RED));
+    //GUI_SetColor(LCD_MakeColor(GUI_BLUE));
+    GUI_SetColor(GUI_MAKE_COLOR(GUI_RED));
     uint32_t colors[25] = {GUI_BLUE,GUI_GREEN,GUI_RED, GUI_CYAN,GUI_MAGENTA,GUI_YELLOW,
     					   GUI_LIGHTBLUE,GUI_LIGHTGREEN,GUI_LIGHTRED,GUI_LIGHTCYAN, GUI_LIGHTMAGENTA,
 						   GUI_LIGHTYELLOW,GUI_DARKBLUE,GUI_DARKGREEN,GUI_DARKRED,GUI_DARKCYAN,
@@ -140,12 +137,12 @@ int main(void)
     GUI_SetColor(GUI_CYAN);
     GUI_FillRoundedRect(150,30,300,100,10);
     GUI_SetFont(GUI_FONT_32B_ASCII);
-    //GUI_SetFont(GUI_FONT_COMIC24B_1);
+    GUI_SetFont(GUI_FONT_COMIC24B_1);
     GUI_SetColor(GUI_BLUE);
     GUI_SetBkColor(GUI_GREEN);
     GUI_DispCharAt('A',3,200);
-    //GUI_DispStringAt("Hi", (LCD_GetXSize()-100)/2, (LCD_GetYSize()-20)/2);
-    GUI_SetBkColor(GUI_DARKCYAN);
+    GUI_DispStringAt("Hi", (LCD_GetXSize()-100)/2, (LCD_GetYSize()-20)/2);
+    GUI_SetBkColor(GUI_CYAN);
     GUI_DispStringAt("Hello World!", (LCD_GetXSize()-100)/2, 200);
     GUI_SetColor(GUI_YELLOW);
     GUI_SetFont(GUI_FONT_COMIC24B_1);
@@ -183,6 +180,8 @@ int main(void)
     hButton2 = BUTTON_Create(30, 195, 100, 30, GUI_ID_OK, WM_CF_SHOW);
     BUTTON_SetText(hButton2,"Button Down");
     BUTTON_SetPressed(hButton2,1);
+
+
     WM_Exec();
     GUI_Exec();
 	//HAL_Delay(1000);
@@ -217,6 +216,8 @@ int main(void)
                 printf("X=%d Y=%d\r\n", x,y);
             }
 		}
+		WM_Exec();
+		GUI_Exec();
 	}
 }
 

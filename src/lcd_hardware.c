@@ -348,9 +348,9 @@ void LCD_ModuleInit()
 
 	LCD_WriteReg(LCD_GRAM);
 
-    LCD_FillScreen2(0x00FF);
-    asm("nop");
-    HAL_Delay(500);
+//    LCD_FillScreen2(0x00FF);
+//    asm("nop");
+//    HAL_Delay(500);
 }
 
 //uint16_t LCD_ReadPixel()
