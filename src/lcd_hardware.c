@@ -7,6 +7,8 @@
 #include "lcd_hardware.h"
 #include "ili9341.h"
 SPI_HandleTypeDef  h_lcd_spi;
+
+static U16 last_reg_command=0;
 //
 ///********************************************************************
 //*
@@ -18,13 +20,14 @@ SPI_HandleTypeDef  h_lcd_spi;
 void LCD_WriteReg(U16 Data)
 {
   // ... TBD by user
-  uint8_t byte = (uint8_t)Data;
-  LCD_DC_LOW();
-  LCD_CS_LOW();
-  if(HAL_SPI_Transmit(&h_lcd_spi,&byte, 1,0xFFFF) != HAL_OK){
-    Error_Handler();
+	last_reg_command = Data;
+    uint8_t byte = (uint8_t)Data;
+    LCD_DC_LOW();
+    LCD_CS_LOW();
+    if(HAL_SPI_Transmit(&h_lcd_spi,&byte, 1,0xFFFF) != HAL_OK){
+        Error_Handler();
     }
-  LCD_CS_HIGH();
+    LCD_CS_HIGH();
 }
 ///********************************************************************
 //*
@@ -39,13 +42,14 @@ void LCD_WriteData(U16 Data)
 	uint8_t *p = (uint8_t*)&Data;
 	LCD_CS_LOW();
 	LCD_DC_HIGH();
-	if(Data&0xFF00){
-      if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p+1), 1,0xFFFF) != HAL_OK){
-        Error_Handler();
-      }
-      if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p), 1,0xFFFF) != HAL_OK){
-        Error_Handler();
-      }
+//	if(Data&0xFF00){
+	if(last_reg_command == 0x2C){ // write to graphic ram
+        if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p+1), 1,0xFFFF) != HAL_OK){
+            Error_Handler();
+        }
+        if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p), 1,0xFFFF) != HAL_OK){
+            Error_Handler();
+        }
 	}else{
       if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)&Data, 1,0xFFFF) != HAL_OK){
         Error_Handler();
@@ -63,20 +67,20 @@ void LCD_WriteData(U16 Data)
 //*/
 void LCD_WriteDataMultiple(U16 * pData, int NumItems)
 {
-  uint8_t *p = (uint8_t*)pData;
-  LCD_CS_LOW();
-  LCD_DC_HIGH();
-  while (NumItems--) {
-	// have to reverse the order of the bytes
-	if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p+1), 1,0xFFFF) != HAL_OK){
-		//Error_Handler();
+    uint8_t *p = (uint8_t*)pData;
+    LCD_CS_LOW();
+    LCD_DC_HIGH();
+    while (NumItems--) {
+      // have to reverse the order of the bytes
+      if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p+1), 1,0xFFFF) != HAL_OK){
+        //Error_Handler();
+      }
+      if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p), 1,0xFFFF) != HAL_OK){
+        //Error_Handler();
+      }
+      pData++;
     }
-	if(HAL_SPI_Transmit(&h_lcd_spi,(uint8_t*)(p), 1,0xFFFF) != HAL_OK){
-		//Error_Handler();
-    }
-	pData++;
-  }
-  LCD_CS_HIGH();
+    LCD_CS_HIGH();
 }
 
 void LCD_WriteByte(uint8_t Data) {
