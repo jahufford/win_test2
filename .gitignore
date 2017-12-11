@@ -16,6 +16,9 @@ code/Middlewares/ST
 *.elf
 *.xml
 *.map
+*.bin
+*.d
+
 
 # Packages #
 ############
