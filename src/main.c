@@ -36,12 +36,12 @@ void SystemClock_Config(void);
 static void _DemoButton(void) {
   BUTTON_Handle hButton;
 
-  GUI_SetFont(&GUI_Font8x16);
+  GUI_SetFont(&GUI_Font24_ASCII);
   GUI_DispStringHCenterAt("Click on button...", 160, 90);
   //
   // Create the button and set text
   //
-  hButton = BUTTON_Create(110, 110, 100, 40, GUI_ID_OK, WM_CF_SHOW);
+  hButton = BUTTON_Create(110, 110, 200, 100, GUI_ID_OK, WM_CF_SHOW);
   BUTTON_SetText(hButton, "Click me...");
   //
   // Let window manager handle the button
