@@ -23,51 +23,39 @@ void Error_Handler(void);
 void Button_Init(void);
 void SystemClock_Config(void);
 
-//uint16_t LCD_MakeColor(uint8_t red, uint8_t green, uint8_t blue)
-uint16_t LCD_MakeColor(uint32_t color_to_convert)
-{
-	uint8_t blue = color_to_convert>>16;
-	uint8_t green = color_to_convert>>8;
-	green &= 0xFF;
-	uint8_t red = color_to_convert&0xFF;
-	uint16_t color = red;
-	color <<= 6;
-	color |= green;
-	color <<= 5;
-	color |= blue;
-	return color;
-}
 
-   GUI_HWIN hWnd;
-static void cbForegroundWin(WM_MESSAGE * pMsg) {
-  switch (pMsg->MsgId) {
-    case WM_PAINT:
-      GUI_SetBkColor(GUI_GREEN);
-      GUI_Clear();
-      GUI_SetColor(GUI_BLUE);
-      GUI_DispString("Foreground window");
-
-    break;
-    default:
-      WM_DefaultProc(pMsg);
-  }
-}
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
 
-struct Rectangle{
-	uint32_t x;
-	uint32_t y;
-	uint32_t width;
-	uint32_t height;
-};
 
-uint8_t InRect(uint32_t x,uint32_t y, struct Rectangle *rect){
-	if(x>=rect->x && x<=rect->x+rect->width && y>=rect->y && y<=rect->y+rect->height){
-		return 1;
-	}
-	return 0;
+
+/*******************************************************************
+*
+*       _DemoButton
+*/
+static void _DemoButton(void) {
+  BUTTON_Handle hButton;
+
+  GUI_SetFont(&GUI_Font8x16);
+  GUI_DispStringHCenterAt("Click on button...", 160, 90);
+  //
+  // Create the button and set text
+  //
+  hButton = BUTTON_Create(110, 110, 100, 40, GUI_ID_OK, WM_CF_SHOW);
+  BUTTON_SetText(hButton, "Click me...");
+  //
+  // Let window manager handle the button
+  //
+  while (GUI_WaitKey() != GUI_ID_OK);
+  //
+  // Delete the button
+  //
+  WM_DeleteWindow(hButton);
+  GUI_ClearRect(0, 50, 319, 239);
+  GUI_Delay(1000);
 }
+
+#define RECOMMENDED_MEMORY (1024L * 5)
 
 int main(void)
 {
@@ -95,202 +83,105 @@ int main(void)
     DebugSerialPort_Init();
     Button_Init();
 
-    uint32_t tickstart = HAL_GetTick();
-    for(int i=0;i<4000000;i++){
-    	tickstart = HAL_GetTick();
-    }
+
     asm("nop");
     volatile int ret;
     ret = GUI_Init();
     asm("nop");
-//    GUI_SetFont(&GUI_Font8x16);
-//    GUI_DispString("Hello world!");
-//    GUI_DispDecAt( 27, 20,20,4);
-
-
-    //volatile int x = GUI_IsInitialized();
-    //GUI_SetBkColor(GUI_DARKRED);
-//    GUI_Clear();
-//    asm("nop");
-//    //GUI_FillRect(20,20,280,150);
-//    //GUI_SetBkColor(GUI_DARKRED);
-//    //GUI_SetColor(LCD_MakeColor(GUI_BLUE));
-    //GUI_SetColor(GUI_MAKE_COLOR(GUI_RED));
-    uint32_t colors[25] = {GUI_BLUE,GUI_GREEN,GUI_RED, GUI_CYAN,GUI_MAGENTA,GUI_YELLOW,
-    					   GUI_LIGHTBLUE,GUI_LIGHTGREEN,GUI_LIGHTRED,GUI_LIGHTCYAN, GUI_LIGHTMAGENTA,
-						   GUI_LIGHTYELLOW,GUI_DARKBLUE,GUI_DARKGREEN,GUI_DARKRED,GUI_DARKCYAN,
-						   GUI_DARKMAGENTA,GUI_DARKYELLOW,GUI_WHITE,GUI_LIGHTGRAY,GUI_GRAY,
-						   GUI_DARKGRAY,GUI_BLACK,GUI_BROWN,GUI_ORANGE};
-    GUI_SetColor(GUI_WHITE);
-    GUI_DrawRect(0,0,319,239);
-//    uint8_t color_index = 0;
-//    for(int i=10;i<310/2;i+=10){
-//    	GUI_SetColor(colors[color_index]);
-//    	color_index++;
-//    	color_index%=25;
-//    	GUI_DrawRect(i,i,319-i,239-i);
-//    }
-//    GUI_SetColor(GUI_RED);
-//    GUI_FillRect(20,20,80,40);
-//    //GUI_SetColor(GUI_MAKE_COLOR(GUI_GREEN));
+    //
+     // Check if recommended memory for the sample is available
+     //
+     if (GUI_ALLOC_GetNumFreeBytes() < RECOMMENDED_MEMORY) {
+       GUI_ErrorOut("Not enough memory available.");
+       return;
+     }
+     GUI_SetBkColor(GUI_BLACK);
+     GUI_Clear();
+     GUI_SetColor(GUI_WHITE);
+     GUI_SetFont(&GUI_Font24_ASCII);
+     GUI_DispStringHCenterAt("WIDGET_SimpleButton - Sample", 160, 5);
+     while (1) {
+       _DemoButton();
+     }
+//
+//    uint32_t colors[25] = {GUI_BLUE,GUI_GREEN,GUI_RED, GUI_CYAN,GUI_MAGENTA,GUI_YELLOW,
+//    					   GUI_LIGHTBLUE,GUI_LIGHTGREEN,GUI_LIGHTRED,GUI_LIGHTCYAN, GUI_LIGHTMAGENTA,
+//						   GUI_LIGHTYELLOW,GUI_DARKBLUE,GUI_DARKGREEN,GUI_DARKRED,GUI_DARKCYAN,
+//						   GUI_DARKMAGENTA,GUI_DARKYELLOW,GUI_WHITE,GUI_LIGHTGRAY,GUI_GRAY,
+//						   GUI_DARKGRAY,GUI_BLACK,GUI_BROWN,GUI_ORANGE};
+//
+//
+//    struct Rectangle rect = {50,50,150,100};
 //    GUI_SetColor(GUI_GREEN);
-//    GUI_FillRect(20,50,80,70);
-//    GUI_SetColor(GUI_BLUE);
-//    GUI_FillRect(20,80,80,100);
-//    GUI_SetColor((GUI_ORANGE));
-//    GUI_FillRect(20,110,80,120);
-//    GUI_SetColor(GUI_RED);
-//    GUI_SetBkColor(GUI_BLACK);
-//    //GUI_SetBkColorIndex(1);
-//	//GUI_SetColorIndex(2);
-//    //GUI_Clear();
-//    //GUI_SetFont(&GUI_Font20_1);
-//    int x = 0;
-//    int y = 120;
-//    for(int i=0;i<25;i++){
-//    	GUI_SetColor(colors[i]);
-//    	GUI_FillRect(x,y,x+10,y+20);
-//    	x+=10;
-//    }
-//    GUI_SetColor(GUI_CYAN);
-//    GUI_FillRoundedRect(150,30,300,100,10);
-//    GUI_SetFont(GUI_FONT_32B_ASCII);
-//    //GUI_SetFont(GUI_FONT_COMIC24B_1);
-//    GUI_SetColor(GUI_BLUE);
-//    GUI_SetBkColor(GUI_GREEN);
-//    GUI_DispCharAt('A',3,200);
-//    //GUI_DispStringAt("Hi", (LCD_GetXSize()-100)/2, (LCD_GetYSize()-20)/2);
-//    GUI_SetBkColor(GUI_DARKCYAN);
-//    GUI_DispStringAt("Hello World!", (LCD_GetXSize()-100)/2, 200);
-//    GUI_SetColor(GUI_YELLOW);
-//    GUI_SetFont(GUI_FONT_COMIC24B_1);
-//    GUI_DispStringAt("Hello World!", 95,150);
-//    GUI_SetColor(GUI_ORANGE);
-//    GUI_FillEllipse(100,100,75,25);
-//    GUI_SetColor(GUI_RED);
-//    GUI_DrawPie(250,175,50,10,80,0);
-//    GUI_SetColor(GUI_BLUE);
-//    GUI_DrawPie(250,175,50,81,135,0);
-//    GUI_SetColor(GUI_YELLOW);
-//    GUI_DrawPie(250,175,50,136,215,0);
+//    GUI_DrawRect(rect.x,rect.y,rect.x+rect.width,rect.y+rect.height);
 //
-//    GUI_DispStringAt("Progress bar", 100, 20);
+//    uint8_t first_response;
+//    uint32_t last_x = rect.x+15;
+//    uint32_t last_y = rect.y+15;
+//    uint32_t touch_offset_x;
+//    uint32_t touch_offset_y;
+//    int delta;
 //
+//	for(;;){
+//        HAL_Delay(100);
+//		if(TS_IsPressed()){
+//            TS_StartRead();
+//			int16_t x = TS_GetX(3);//  average a few reads, since quick taps tend to make a bogus read initially
+//			int16_t y = TS_GetY(3);
+//			TS_SetIdle();
+//			TS_EndRead();
 //
-//    /* Create foreground window */
-//    //hWnd = WM_CreateWindow(10, 10, 300, 200, WM_CF_SHOW, cbForegroundWin, 0);
-//    PROGBAR_Handle hProgBar;
-//    hProgBar = PROGBAR_Create(85, 50, 200, 40, WM_CF_SHOW);
-//    PROGBAR_SetBarColor(hProgBar, 0, GUI_YELLOW);
-//    PROGBAR_SetBarColor(hProgBar, 1, GUI_RED);
-//    PROGBAR_SetValue(hProgBar, 77);
-//    PROGBAR_SetFont(hProgBar,GUI_FONT_COMIC24B_1);
-////    BUTTON_Handle btn = BUTTON_CreateEx(30,180,30,15,0,0,WM_CF_SHOW,0);
-////    BUTTON_SetText(btn,"Button");
-//    BUTTON_Handle hButton;
-//    GUI_SetFont(&GUI_Font8x16);
-//    //GUI_DispStringHCenterAt("Click on button...", 160, 90);
-//    /* Create the button*/
-//    hButton = BUTTON_Create(30, 160, 100, 30, GUI_ID_OK, WM_CF_SHOW);
-//    /* Set the button text */
-//    BUTTON_SetText(hButton, "Button Up");
-//    BUTTON_Handle hButton2;
-//    hButton2 = BUTTON_Create(30, 195, 100, 30, GUI_ID_OK, WM_CF_SHOW);
-//    BUTTON_SetText(hButton2,"Button Down");
-//    BUTTON_SetPressed(hButton2,1);
-//    WM_Exec();
-//    GUI_Exec();
-	//HAL_Delay(1000);
-//    for(;;){
-//    	BUTTON_SetPressed(hButton,1);
-//    	WM_Exec();
-//    	HAL_Delay(1000);
-//    	BUTTON_SetPressed(hButton,0);
-//    	WM_Exec();
-//    	HAL_Delay(1000);
-////    }
-//        while(1){
-//        	HAL_Delay(100);
-//            //TOUCHSCREEN_CS_LOW();
-//            uint16_t datax = TS_GetX(5);
-//            uint16_t datay = TS_GetY(5);
-//            TS_SetIdle();
+//			if( x > 0 && y > 0){ // if valid coordinate reads
+//				if(InRect(x,y,&rect)){
+//                    if(first_response){
+////                      GUI_SetColor(GUI_BLACK);
+////                      GUI_FillRect(1,1,318,238);
+//                    	LCD_FillScreen2(0);
+//                    	GUI_SetColor(GUI_WHITE);
+//                    	GUI_DrawRect(0,0,319,239);
+//                      touch_offset_x = x-rect.x;
+//                      touch_offset_y = y-rect.y;
+//                      first_response = 0;
+//                    }else{
+//                    	// it's movement
+//                    	delta = last_x - x;
+//                    }
+//					// erase old rect and crosshairs
+//					GUI_SetColor(GUI_BLACK);
+//					GUI_DrawRect(rect.x,rect.y,rect.x+rect.width,rect.y+rect.height);
+//					GUI_DrawHLine(last_y,rect.x,rect.x+rect.width);
+//					GUI_DrawVLine(last_x,rect.y,rect.y+rect.height);
 //
-//            //printf("X = %d, Y = %d, Z1 = %d, Z2 = %d, zdiff = %d\r\n",datax, datay,dataz1,dataz2,dataz2-dataz1);
-//            printf("X = %d, Y = %d\r\n",datax, datay);
-//        }
-
-    struct Rectangle rect = {50,50,150,100};
-    GUI_SetColor(GUI_GREEN);
-    GUI_DrawRect(rect.x,rect.y,rect.x+rect.width,rect.y+rect.height);
-
-    uint8_t first_response;
-    uint32_t last_x = rect.x+15;
-    uint32_t last_y = rect.y+15;
-    uint32_t touch_offset_x;
-    uint32_t touch_offset_y;
-    int delta;
-
-	for(;;){
-        HAL_Delay(100);
-		if(TS_IsPressed()){
-            TS_StartRead();
-			int16_t x = TS_GetX(3);//  average a few reads, since quick taps tend to make a bogus read initially
-			int16_t y = TS_GetY(3);
-			TS_SetIdle();
-			TS_EndRead();
-
-			if( x > 0 && y > 0){ // if valid coordinate reads
-				if(InRect(x,y,&rect)){
-                    if(first_response){
-//                      GUI_SetColor(GUI_BLACK);
-//                      GUI_FillRect(1,1,318,238);
-                    	LCD_FillScreen2(0);
-                    	GUI_SetColor(GUI_WHITE);
-                    	GUI_DrawRect(0,0,319,239);
-                      touch_offset_x = x-rect.x;
-                      touch_offset_y = y-rect.y;
-                      first_response = 0;
-                    }else{
-                    	// it's movement
-                    	delta = last_x - x;
-                    }
-					// erase old rect and crosshairs
-					GUI_SetColor(GUI_BLACK);
-					GUI_DrawRect(rect.x,rect.y,rect.x+rect.width,rect.y+rect.height);
-					GUI_DrawHLine(last_y,rect.x,rect.x+rect.width);
-					GUI_DrawVLine(last_x,rect.y,rect.y+rect.height);
-
-					if((int)x - (int)touch_offset_x <= 0){
-						rect.x=1;
-					}else if( (int)x-(int)touch_offset_x+rect.width >=318){
-						rect.x = 319-rect.width-1;
-					}else{
-						rect.x = x-touch_offset_x;
-					}
-
-					if((int)y - (int)touch_offset_y <= 0){
-						rect.y=1;
-					}else if( (int)y-(int)touch_offset_y+rect.height >= 238){
-						rect.y = 239-rect.height-1;
-					}else{
-                        rect.y = y-touch_offset_y;
-					}
-					GUI_SetColor(GUI_GREEN);
-					GUI_DrawRect(rect.x,rect.y,rect.x+rect.width,rect.y+rect.height);
-
-					GUI_SetColor(GUI_RED);
-					GUI_DrawHLine(y,rect.x,rect.x+rect.width);
-					GUI_DrawVLine(x,rect.y,rect.y+rect.height);
-				}
-				last_x = x;
-				last_y = y;
-				printf("X=%d Y=%d\r\n", x,y);
-            }
-		}else{
-			first_response = 1;
-		}
-	}
+//					if((int)x - (int)touch_offset_x <= 0){
+//						rect.x=1;
+//					}else if( (int)x-(int)touch_offset_x+rect.width >=318){
+//						rect.x = 319-rect.width-1;
+//					}else{
+//						rect.x = x-touch_offset_x;
+//					}
+//
+//					if((int)y - (int)touch_offset_y <= 0){
+//						rect.y=1;
+//					}else if( (int)y-(int)touch_offset_y+rect.height >= 238){
+//						rect.y = 239-rect.height-1;
+//					}else{
+//                        rect.y = y-touch_offset_y;
+//					}
+//					GUI_SetColor(GUI_GREEN);
+//					GUI_DrawRect(rect.x,rect.y,rect.x+rect.width,rect.y+rect.height);
+//
+//					GUI_SetColor(GUI_RED);
+//					GUI_DrawHLine(y,rect.x,rect.x+rect.width);
+//					GUI_DrawVLine(x,rect.y,rect.y+rect.height);
+//				}
+//				last_x = x;
+//				last_y = y;
+//				printf("X=%d Y=%d\r\n", x,y);
+//            }
+//		}else{
+//			first_response = 1;
+//		}
+//	}
 }
 
 

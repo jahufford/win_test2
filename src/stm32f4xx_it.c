@@ -16,7 +16,7 @@
 #endif
 #include "stm32f4xx_it.h"
 #include "touchscreen.h"
-
+#include "GUI.h"
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -103,12 +103,27 @@ void EXTI9_5_IRQHandler(void)
     	  EXTI->RTSR &= ~(TOUCHSCREEN_IRQ_PIN); // turn off rising egge
     	  EXTI->FTSR |= TOUCHSCREEN_IRQ_PIN; // turn on falling edge
           touchscreen_is_pressed = 0;
+          GUI_PID_STATE pstate;
+          pstate.Pressed = 0;
+          pstate.Layer = 0;
+          GUI_PID_StoreState(&pstate);
       }else{
     	  EXTI->FTSR &= ~(TOUCHSCREEN_IRQ_PIN); // turn off falling edge
     	  EXTI->RTSR |= (TOUCHSCREEN_IRQ_PIN);
           touchscreen_is_pressed = 1;
           // TODO
           // read x y coordinates, and insert to PID queue of the window manager
+          TS_StartRead();
+          int x = TS_GetX(3);//  average a few reads, since quick taps tend to make a bogus read initially
+          int y = TS_GetY(3);
+          TS_SetIdle();
+          TS_EndRead();
+          GUI_PID_STATE pstate;
+          pstate.x = x;
+          pstate.y = y;
+          pstate.Pressed = 1;
+          pstate.Layer = 0;
+          GUI_PID_StoreState(&pstate);
       }
       EXTI->IMR |= (1<<7); // unmask the interrupt
       __HAL_GPIO_EXTI_CLEAR_IT(TOUCHSCREEN_IRQ_PIN);
