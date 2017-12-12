@@ -166,7 +166,7 @@ void LCD_X_Config(void) {
   PortAPI.pfWrite16_A0  = LCD_WriteReg;
   PortAPI.pfWrite16_A1  = LCD_WriteData;
   PortAPI.pfWriteM16_A1 = LCD_WriteDataMultiple;
-  PortAPI.pfReadM16_A1  = LcdReadDataMultiple;
+  PortAPI.pfReadM16_A1  = LCD_ReadDataMultiple;
 
   //GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66708, GUIDRV_FLEXCOLOR_M16C0B16);
   GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, GUIDRV_FLEXCOLOR_F66709, GUIDRV_FLEXCOLOR_M16C0B16);
