@@ -353,32 +353,6 @@ int main(void)
 
     DebugSerialPort_Init();
     Button_Init();
-    __HAL_RCC_TIM5_CLK_ENABLE();
-    // set up a basic ticker
-//    TIM_HandleTypeDef h_basic_ticker;
-    //h_basic_ticker.Instance = BASIC_TICKERx;
-    h_touchpressed_ticker.Instance = TIM5;
-    h_touchpressed_ticker.State = HAL_TIM_STATE_RESET;
-    h_touchpressed_ticker.Init.ClockDivision = 0;
-    h_touchpressed_ticker.Init.CounterMode = TIM_COUNTERMODE_UP;
-    //h_basic_ticker.Init.Period = 0XFFFFFFFF;
-    h_touchpressed_ticker.Init.Period = 9000*10;
-//    h_basic_ticker.Init.Period = 0xFFFFFFFF;
-    h_touchpressed_ticker.Init.Prescaler = 0;
-    HAL_TIM_Base_Init(&h_touchpressed_ticker);
-    //HAL_TIM_Base_Start(&h_touchpressed_ticker);
-
-    h_touchpressed_ticker.Instance->DIER |= 1;
-	uint32_t reg;
-//    reg = SYSCFG->EXTICR[1];
-//    reg &= ~(SYSCFG_EXTICR2_EXTI7_Msk);  // ~(0xF << 12)
-//    reg |= (SYSCFG_EXTICR2_EXTI7_PA);
-//    SYSCFG->EXTICR[1] = reg;
-//    touchscreen_is_pressed = 0;
-	TIM5->SR &= ~TIM_SR_UIF;
-	NVIC_SetPriority(TIM5_IRQn, 1);
-    NVIC_ClearPendingIRQ(TIM5_IRQn);
-    NVIC_EnableIRQ(TIM5_IRQn);
 
 
     asm("nop");

@@ -98,6 +98,22 @@ uint8_t TS_HardwareInit()
     	return 0;
     }
 
+    // set up movement timer and interrupt
+    __HAL_RCC_TIM5_CLK_ENABLE();
+    // set up a basic ticker
+    h_touchpressed_ticker.Instance = TIM5;
+    h_touchpressed_ticker.State = HAL_TIM_STATE_RESET;
+    h_touchpressed_ticker.Init.ClockDivision = 0;
+    h_touchpressed_ticker.Init.CounterMode = TIM_COUNTERMODE_UP;
+    h_touchpressed_ticker.Init.Period = 9000*10;
+    h_touchpressed_ticker.Init.Prescaler = 0;
+    HAL_TIM_Base_Init(&h_touchpressed_ticker);
+    h_touchpressed_ticker.Instance->DIER |= 1;
+	TIM5->SR &= ~TIM_SR_UIF;
+	NVIC_SetPriority(TIM5_IRQn, 1);
+    NVIC_ClearPendingIRQ(TIM5_IRQn);
+    NVIC_EnableIRQ(TIM5_IRQn);
+
 	return 1;
 }
 
