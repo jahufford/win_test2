@@ -11,6 +11,7 @@
 SPI_HandleTypeDef  h_touchscreen_spi;
 
 uint8_t touchscreen_is_pressed;
+TIM_HandleTypeDef h_touchpressed_ticker;
 
 // returns 1 on success, 0 on failure
 uint8_t TS_HardwareInit()
@@ -69,6 +70,7 @@ uint8_t TS_HardwareInit()
     reg |= (SYSCFG_EXTICR2_EXTI7_PA);
     SYSCFG->EXTICR[1] = reg;
     touchscreen_is_pressed = 0;
+    __HAL_GPIO_EXTI_CLEAR_IT(TOUCHSCREEN_IRQ_PIN);
     NVIC_SetPriority(EXTI9_5_IRQn, 1);
     NVIC_ClearPendingIRQ(EXTI9_5_IRQn);
     NVIC_EnableIRQ(EXTI9_5_IRQn);
