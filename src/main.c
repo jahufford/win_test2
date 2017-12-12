@@ -27,200 +27,204 @@ void SystemClock_Config(void);
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
 
+#include <stddef.h>
+#include <string.h>
+#include "WM.h"
+#include "FRAMEWIN.h"
+#include "BUTTON.h"
 
-/*******************************************************************
+/*********************************************************************
 *
-*       static variables
+*       Defines
 *
-********************************************************************
+**********************************************************************
 */
-/*******************************************************************
+//
+// Recommended memory to run the sample with adequate performance
+//
+#define RECOMMENDED_MEMORY (1024L * 5)
+
+/*********************************************************************
 *
-*       Bitmap data, 3 phone logos
+*       Static data
+*
+**********************************************************************
 */
-static const GUI_COLOR Colors[] = { 0x000000, 0xFF0000 };
+static int _Color;
+static int _Font;
+static int _Pressed;
 
-static const GUI_LOGPALETTE Palette = { 2, 1, Colors };
-
-static const unsigned char acPhone0[] = {
-  ________, ________, ________, ________,
-  ________, ________, ________, ________,
-  ________, ________, ________, ________,
-  ________, ________, ________, ________,
-  ________, ________, ________, ________,
-  ________, ________, ________, ________,
-  ________, ________, ________, ________,
-  ________, ________, ________, ________,
-  ________, ________, ________, ________,
-  ________, ________, ________, ________,
-  ________, ________, ________, ________,
-  _____XXX, XXXXXXXX, XXXXXXXX, XXX_____,
-  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___,
-  __XXXXXX, XXXXXXXX, XXXXXXXX, XXXXXX__,
-  _XXXXXXX, X_______, _______X, XXXXXXX_,
-  _XXXXXXX, X__XX___, ___XX__X, XXXXXXX_,
-  _XXXXXXX, X__XX___, ___XX__X, XXXXXXX_,
-  _XXXXXXX, X__XX___, ___XX__X, XXXXXXX_,
-  ________, ___XX___, ___XX___, ________,
-  _______X, XXXXXXXX, XXXXXXXX, X_______,
-  ______XX, XXXXXXXX, XXXXXXXX, XX______,
-  _____XXX, XXXX__X_, _X__XXXX, XXX_____,
-  ____XXXX, XXXX__X_, _X__XXXX, XXXX____,
-  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___,
-  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
-  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
-  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___,
-  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
-  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
-  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___,
-  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___
+static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
+  { FRAMEWIN_CreateIndirect, "Round button sample", 0,      50,  60, 200, 120, FRAMEWIN_CF_MOVEABLE },
+  { BUTTON_CreateIndirect,   "Button",   GUI_ID_BUTTON0,   100,  10,  80,  80 },
+  { BUTTON_CreateIndirect,   "Callback", GUI_ID_BUTTON1,    10,  10,  60,  20 },
+  { BUTTON_CreateIndirect,   "Font",     GUI_ID_BUTTON2,    10,  30,  60,  20 },
+  { BUTTON_CreateIndirect,   "Color",    GUI_ID_BUTTON3,    10,  50,  60,  20 },
+  { BUTTON_CreateIndirect,   "Cancel",   GUI_ID_CANCEL,     10,  70,  60,  20 }
 };
 
-static const unsigned char acPhone1[] = {
-  ________, ________, ________, ________,
-  ______XX, X_______, ________, ________,
-  ____XXXX, XXXXX___, ________, ________,
-  ____XXXX, XXXXXXX_, ________, ________,
-  ___XXXXX, XXXXXXXX, X_______, ________,
-  ___XXXXX, XXXXXXXX, XXX_____, ________,
-  _____XXX, XXXX_XXX, XXXXX___, ________,
-  _______X, XXXX___X, XXXXXXX_, ________,
-  ________, _XX_____, _XXXXXXX, X_______,
-  ________, ________, ___XXXXX, XXX_____,
-  ________, ________, _____XXX, XXXXX___,
-  ________, ________, _______X, XXXXXX__,
-  ________, ________, ________, XXXXXXX_,
-  ________, ________, ________, XXXXXXX_,
-  ________, ________, _______X, XXXXXXXX,
-  ________, ___XX___, ___XX__X, XXXXXXXX,
-  ________, ___XX___, ___XX___, _XXXXXXX,
-  ________, ___XX___, ___XX___, ___XXXX_,
-  ________, ___XX___, ___XX___, _____XX_,
-  _______X, XXXXXXXX, XXXXXXXX, X_______,
-  ______XX, XXXXXXXX, XXXXXXXX, XX______,
-  _____XXX, XXXX__X_, _X__XXXX, XXX_____,
-  ____XXXX, XXXX__X_, _X__XXXX, XXXX____,
-  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___,
-  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
-  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
-  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___,
-  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
-  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
-  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___,
-  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___
-};
-
-static const unsigned char acPhone2[] = {
-  ________, ________, ________, ________,
-  ________, ________, _______X, XX______,
-  ________, ________, ___XXXXX, XXXX____,
-  ________, ________, _XXXXXXX, XXXX____,
-  ________, _______X, XXXXXXXX, XXXXX___,
-  ________, _____XXX, XXXXXXXX, XXXXX___,
-  ________, ___XXXXX, XXX_XXXX, XXX_____,
-  ________, _XXXXXXX, X___XXXX, X_______,
-  _______X, XXXXXXX_, _____XX_, ________,
-  _____XXX, XXXXX___, ________, ________,
-  ___XXXXX, XXX_____, ________, ________,
-  __XXXXXX, X_______, ________, ________,
-  _XXXXXXX, ________, ________, ________,
-  _XXXXXXX, ________, ________, ________,
-  XXXXXXXX, X_______, ________, ________,
-  XXXXXXXX, X__XX___, ___XX___, ________,
-  XXXXXXX_, ___XX___, ___XX___, ________,
-  _XXXX___, ___XX___, ___XX___, ________,
-  _XX_____, ___XX___, ___XX___, ________,
-  _______X, XXXXXXXX, XXXXXXXX, X_______,
-  ______XX, XXXXXXXX, XXXXXXXX, XX______,
-  _____XXX, XXXX__X_, _X__XXXX, XXX_____,
-  ____XXXX, XXXX__X_, _X__XXXX, XXXX____,
-  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___,
-  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
-  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
-  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___,
-  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
-  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
-  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___,
-  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___
-};
-
-static const GUI_BITMAP bm_1bpp_0 = { 32, 31, 4, 1, acPhone0, &Palette};
-static const GUI_BITMAP bm_1bpp_1 = { 32, 31, 4, 1, acPhone1, &Palette};
-static const GUI_BITMAP bm_1bpp_2 = { 32, 31, 4, 1, acPhone2, &Palette};
-
-/*******************************************************************
+/*********************************************************************
 *
-*       static code
+*       Static functions
 *
-********************************************************************
+**********************************************************************
 */
-/*******************************************************************
+/*********************************************************************
 *
-*       _Wait
+*       _OnPaint
+*
+* Function description
+*   Paints the owner drawn button
 */
-static int _Wait(int Delay) {
-  int EndTime;
-  int r;
+static void _OnPaint(BUTTON_Handle hObj) {
+  int Index;
+  char ac[50];
+  GUI_RECT Rect;
 
-  r = 1;
-  EndTime = GUI_GetTime() + Delay;
-  while (GUI_GetTime() < EndTime) {
-    GUI_Exec();
-    if (GUI_GetKey() == GUI_ID_OK) {
-      r = 0;
+  Index = (WIDGET_GetState(hObj) & BUTTON_STATE_PRESSED) ? 1 : 0;
+  WM_GetClientRect(&Rect);
+  //
+  // Draw filled ellipse with button background color
+  //
+  GUI_SetColor(BUTTON_GetBkColor(hObj, Index));
+  GUI_FillEllipse(Rect.x1 / 2, Rect.y1 / 2, Rect.x1 / 2, Rect.y1 / 2);
+  //
+  // Draw black shape
+  //
+  GUI_SetColor(GUI_BLACK);
+  GUI_DrawEllipse(Rect.x1 / 2, Rect.y1 / 2, Rect.x1 / 2, Rect.y1 / 2);
+  //
+  // Draw button text with widget attributes
+  //
+  GUI_SetColor(BUTTON_GetTextColor(hObj, Index));
+  GUI_SetBkColor(BUTTON_GetBkColor(hObj, Index));
+  GUI_SetFont(BUTTON_GetFont(hObj));
+  BUTTON_GetText(hObj, ac, sizeof(ac));
+  if (_Pressed) {
+    strcpy(ac + strlen(ac), "\npressed");
+  }
+  GUI_DispStringInRect(ac, &Rect, GUI_TA_HCENTER | GUI_TA_VCENTER);
+}
+
+/*********************************************************************
+*
+*       _cbButton
+*
+* Function description
+*  1. Calls the owner draw function if the WM_PAINT message has been send
+*  2. Calls the original callback for further messages
+*  3. After processing the messages the function evaluates the pressed-state
+*     if the WM_TOUCH message has been send
+*/
+static void _cbButton(WM_MESSAGE * pMsg) {
+  switch (pMsg->MsgId) {
+    case WM_PAINT:
+      _OnPaint(pMsg->hWin);
       break;
+    default:
+      BUTTON_Callback(pMsg); // The original callback
+      break;
+  }
+  if (pMsg->MsgId == WM_TOUCH) {
+    if (BUTTON_IsPressed(pMsg->hWin)) {
+      if (!_Pressed) {
+        _Pressed = 1;
+      }
+    } else {
+      _Pressed = 0;
     }
   }
-  return r;
 }
 
-/*******************************************************************
+/*********************************************************************
 *
-*       _DemoButton
+*       _cbDialog
+*
+* Function description
+*   Dialog callback routine
 */
-static void _DemoButton(void) {
+static void _cbDialog(WM_MESSAGE * pMsg) {
+  int           NCode;
+  int           Id;
+  WM_HWIN       hDlg;
   BUTTON_Handle hButton;
 
-  GUI_SetFont(&GUI_Font8x16);
-  GUI_DispStringHCenterAt("Click on phone button...", 160,80);
-  GUI_Delay(500);
-  //
-  // Create the button and modify its attributes
-  //
-  hButton = BUTTON_Create(142, 100, 36, 40, GUI_ID_OK, WM_CF_SHOW);
-  BUTTON_SetBkColor (hButton, 1, GUI_RED);
-  //
-  // Loop until button is pressed
-  //
-  while (1) {
-    BUTTON_SetBitmapEx(hButton, 0, &bm_1bpp_1, 2, 4);
-    BUTTON_SetBitmapEx(hButton, 1, &bm_1bpp_1, 2, 4);
-    if (!_Wait(50)) break;
-    BUTTON_SetBitmapEx(hButton, 0, &bm_1bpp_0, 2, 4);
-    BUTTON_SetBitmapEx(hButton, 1, &bm_1bpp_0, 2, 4);
-    if (!_Wait(45)) break;
-    BUTTON_SetBitmapEx(hButton, 0, &bm_1bpp_2, 2, 4);
-    BUTTON_SetBitmapEx(hButton, 1, &bm_1bpp_2, 2, 4);
-    if (!_Wait(50)) break;
-    BUTTON_SetBitmapEx(hButton, 0, &bm_1bpp_0, 2, 4);
-    BUTTON_SetBitmapEx(hButton, 1, &bm_1bpp_0, 2, 4);
-    if (!_Wait(45)) break;
+  hDlg = pMsg->hWin;
+  switch (pMsg->MsgId) {
+    case WM_PAINT:
+      WM_DefaultProc(pMsg); // Handle dialog items
+      //
+      // After drawing the dialog items add some user drawn items to the window
+      //
+      GUI_SetPenSize(10);
+      GUI_SetColor(GUI_GREEN);
+      GUI_DrawLine( 95,  5, 185, 95);
+      GUI_SetColor(GUI_RED);
+      GUI_DrawLine( 95, 95, 185,  5);
+      break;
+    case WM_INIT_DIALOG:
+      hButton = WM_GetDialogItem(hDlg, GUI_ID_BUTTON0);
+      WM_SetHasTrans(hButton);              // Set transparency flag for button
+      break;
+    case WM_KEY:
+      switch (((WM_KEY_INFO *)(pMsg->Data.p))->Key) {
+        case GUI_KEY_ESCAPE:
+          GUI_EndDialog(hDlg, 1);
+          break;
+        case GUI_KEY_ENTER:
+          GUI_EndDialog(hDlg, 0);
+          break;
+      }
+      break;
+    case WM_NOTIFY_PARENT:
+      Id    = WM_GetId(pMsg->hWinSrc);      // Id of widget
+      NCode = pMsg->Data.v;                 // Notification code
+      switch (NCode) {
+        case WM_NOTIFICATION_RELEASED:      // React only if released
+          hButton = WM_GetDialogItem(hDlg, GUI_ID_BUTTON0);
+          if (Id == GUI_ID_BUTTON1) {       // Toggle callback
+            if (WM_GetCallback(hButton) == _cbButton) {
+              WM_SetCallback(hButton, BUTTON_Callback);
+            } else {
+              WM_SetCallback(hButton, _cbButton);
+            }
+            WM_InvalidateWindow(hButton);
+          }
+          if (Id == GUI_ID_BUTTON2) {       // Toggle font
+            if (_Font) {
+              BUTTON_SetFont(hButton, &GUI_Font13_1);
+            } else {
+              BUTTON_SetFont(hButton, &GUI_Font8x16);
+            }
+            _Font ^= 1;
+          }
+          if (Id == GUI_ID_BUTTON3) {       // Toggle color
+            if (_Color) {
+              BUTTON_SetBkColor(hButton, 0, 0xaaaaaa);
+              BUTTON_SetBkColor(hButton, 1, GUI_WHITE);
+              BUTTON_SetTextColor(hButton, 0, GUI_BLACK);
+              BUTTON_SetTextColor(hButton, 1, GUI_BLACK);
+            } else {
+              BUTTON_SetBkColor(hButton, 0, GUI_BLUE);
+              BUTTON_SetBkColor(hButton, 1, GUI_RED);
+              BUTTON_SetTextColor(hButton, 0, GUI_WHITE);
+              BUTTON_SetTextColor(hButton, 1, GUI_YELLOW);
+            }
+            _Color ^= 1;
+          }
+          if (Id == GUI_ID_OK) {            // OK Button
+            GUI_EndDialog(hDlg, 0);
+          }
+          if (Id == GUI_ID_CANCEL) {        // Cancel Button
+            GUI_EndDialog(hDlg, 1);
+          }
+          break;
+      }
+      break;
+    default:
+      WM_DefaultProc(pMsg);
   }
-  BUTTON_SetBitmapEx(hButton, 0, &bm_1bpp_1, 2, 4);
-  BUTTON_SetBitmapEx(hButton, 1, &bm_1bpp_1, 2, 4);
-  GUI_ClearRect(0, 80, 319, 120);
-  GUI_DispStringHCenterAt("You have answered the telephone", 160, 145);
-  GUI_Delay(2000);
-  //
-  // Delete button object
-  //
-  WM_DeleteWindow(hButton);
-  GUI_ClearRect(0, 50, 319, 239);
-  GUI_Delay(400);
 }
-
-
-#define RECOMMENDED_MEMORY (1024L * 5)
 
 int main(void)
 {
@@ -260,15 +264,16 @@ int main(void)
        GUI_ErrorOut("Not enough memory available.");
        return;
      }
-     GUI_SetBkColor(GUI_BLACK);
-     GUI_Clear();
-     GUI_SetColor(GUI_WHITE);
-     GUI_SetFont(&GUI_Font24_ASCII);
-     GUI_DispStringHCenterAt("WIDGET_PhoneButton - Sample", 160, 5);
-     while (1) {
-       _DemoButton();
-     }
-
+#if GUI_SUPPORT_MEMDEV
+  WM_SetCreateFlags(WM_CF_MEMDEV);
+  WM_EnableMemdev(WM_HBKWIN);
+#endif
+WM_SetDesktopColor(GUI_GREEN);
+while(1) {
+  _Font = _Color = 0;
+  GUI_ExecDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), &_cbDialog, 0, 0, 0);
+  GUI_Delay(1000);
+}
 }
 
 
