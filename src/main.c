@@ -28,6 +28,151 @@ void SystemClock_Config(void);
 #define LD2_GPIO_Port GPIOA
 
 
+/*******************************************************************
+*
+*       static variables
+*
+********************************************************************
+*/
+/*******************************************************************
+*
+*       Bitmap data, 3 phone logos
+*/
+static const GUI_COLOR Colors[] = { 0x000000, 0xFF0000 };
+
+static const GUI_LOGPALETTE Palette = { 2, 1, Colors };
+
+static const unsigned char acPhone0[] = {
+  ________, ________, ________, ________,
+  ________, ________, ________, ________,
+  ________, ________, ________, ________,
+  ________, ________, ________, ________,
+  ________, ________, ________, ________,
+  ________, ________, ________, ________,
+  ________, ________, ________, ________,
+  ________, ________, ________, ________,
+  ________, ________, ________, ________,
+  ________, ________, ________, ________,
+  ________, ________, ________, ________,
+  _____XXX, XXXXXXXX, XXXXXXXX, XXX_____,
+  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___,
+  __XXXXXX, XXXXXXXX, XXXXXXXX, XXXXXX__,
+  _XXXXXXX, X_______, _______X, XXXXXXX_,
+  _XXXXXXX, X__XX___, ___XX__X, XXXXXXX_,
+  _XXXXXXX, X__XX___, ___XX__X, XXXXXXX_,
+  _XXXXXXX, X__XX___, ___XX__X, XXXXXXX_,
+  ________, ___XX___, ___XX___, ________,
+  _______X, XXXXXXXX, XXXXXXXX, X_______,
+  ______XX, XXXXXXXX, XXXXXXXX, XX______,
+  _____XXX, XXXX__X_, _X__XXXX, XXX_____,
+  ____XXXX, XXXX__X_, _X__XXXX, XXXX____,
+  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___,
+  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
+  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
+  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___,
+  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
+  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
+  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___,
+  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___
+};
+
+static const unsigned char acPhone1[] = {
+  ________, ________, ________, ________,
+  ______XX, X_______, ________, ________,
+  ____XXXX, XXXXX___, ________, ________,
+  ____XXXX, XXXXXXX_, ________, ________,
+  ___XXXXX, XXXXXXXX, X_______, ________,
+  ___XXXXX, XXXXXXXX, XXX_____, ________,
+  _____XXX, XXXX_XXX, XXXXX___, ________,
+  _______X, XXXX___X, XXXXXXX_, ________,
+  ________, _XX_____, _XXXXXXX, X_______,
+  ________, ________, ___XXXXX, XXX_____,
+  ________, ________, _____XXX, XXXXX___,
+  ________, ________, _______X, XXXXXX__,
+  ________, ________, ________, XXXXXXX_,
+  ________, ________, ________, XXXXXXX_,
+  ________, ________, _______X, XXXXXXXX,
+  ________, ___XX___, ___XX__X, XXXXXXXX,
+  ________, ___XX___, ___XX___, _XXXXXXX,
+  ________, ___XX___, ___XX___, ___XXXX_,
+  ________, ___XX___, ___XX___, _____XX_,
+  _______X, XXXXXXXX, XXXXXXXX, X_______,
+  ______XX, XXXXXXXX, XXXXXXXX, XX______,
+  _____XXX, XXXX__X_, _X__XXXX, XXX_____,
+  ____XXXX, XXXX__X_, _X__XXXX, XXXX____,
+  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___,
+  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
+  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
+  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___,
+  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
+  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
+  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___,
+  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___
+};
+
+static const unsigned char acPhone2[] = {
+  ________, ________, ________, ________,
+  ________, ________, _______X, XX______,
+  ________, ________, ___XXXXX, XXXX____,
+  ________, ________, _XXXXXXX, XXXX____,
+  ________, _______X, XXXXXXXX, XXXXX___,
+  ________, _____XXX, XXXXXXXX, XXXXX___,
+  ________, ___XXXXX, XXX_XXXX, XXX_____,
+  ________, _XXXXXXX, X___XXXX, X_______,
+  _______X, XXXXXXX_, _____XX_, ________,
+  _____XXX, XXXXX___, ________, ________,
+  ___XXXXX, XXX_____, ________, ________,
+  __XXXXXX, X_______, ________, ________,
+  _XXXXXXX, ________, ________, ________,
+  _XXXXXXX, ________, ________, ________,
+  XXXXXXXX, X_______, ________, ________,
+  XXXXXXXX, X__XX___, ___XX___, ________,
+  XXXXXXX_, ___XX___, ___XX___, ________,
+  _XXXX___, ___XX___, ___XX___, ________,
+  _XX_____, ___XX___, ___XX___, ________,
+  _______X, XXXXXXXX, XXXXXXXX, X_______,
+  ______XX, XXXXXXXX, XXXXXXXX, XX______,
+  _____XXX, XXXX__X_, _X__XXXX, XXX_____,
+  ____XXXX, XXXX__X_, _X__XXXX, XXXX____,
+  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___,
+  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
+  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
+  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___,
+  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
+  ___XXXXX, XXXX__X_, _X__XXXX, XXXXX___,
+  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___,
+  ___XXXXX, XXXXXXXX, XXXXXXXX, XXXXX___
+};
+
+static const GUI_BITMAP bm_1bpp_0 = { 32, 31, 4, 1, acPhone0, &Palette};
+static const GUI_BITMAP bm_1bpp_1 = { 32, 31, 4, 1, acPhone1, &Palette};
+static const GUI_BITMAP bm_1bpp_2 = { 32, 31, 4, 1, acPhone2, &Palette};
+
+/*******************************************************************
+*
+*       static code
+*
+********************************************************************
+*/
+/*******************************************************************
+*
+*       _Wait
+*/
+static int _Wait(int Delay) {
+  int EndTime;
+  int r;
+
+  r = 1;
+  EndTime = GUI_GetTime() + Delay;
+  while (GUI_GetTime() < EndTime) {
+    GUI_Exec();
+    if (GUI_GetKey() == GUI_ID_OK) {
+      r = 0;
+      break;
+    }
+  }
+  return r;
+}
 
 /*******************************************************************
 *
@@ -36,24 +181,44 @@ void SystemClock_Config(void);
 static void _DemoButton(void) {
   BUTTON_Handle hButton;
 
-  GUI_SetFont(&GUI_Font24_ASCII);
-  GUI_DispStringHCenterAt("Click on button...", 160, 90);
+  GUI_SetFont(&GUI_Font8x16);
+  GUI_DispStringHCenterAt("Click on phone button...", 160,80);
+  GUI_Delay(500);
   //
-  // Create the button and set text
+  // Create the button and modify its attributes
   //
-  hButton = BUTTON_Create(110, 110, 200, 100, GUI_ID_OK, WM_CF_SHOW);
-  BUTTON_SetText(hButton, "Click me...");
+  hButton = BUTTON_Create(142, 100, 36, 40, GUI_ID_OK, WM_CF_SHOW);
+  BUTTON_SetBkColor (hButton, 1, GUI_RED);
   //
-  // Let window manager handle the button
+  // Loop until button is pressed
   //
-  while (GUI_WaitKey() != GUI_ID_OK);
+  while (1) {
+    BUTTON_SetBitmapEx(hButton, 0, &bm_1bpp_1, 2, 4);
+    BUTTON_SetBitmapEx(hButton, 1, &bm_1bpp_1, 2, 4);
+    if (!_Wait(50)) break;
+    BUTTON_SetBitmapEx(hButton, 0, &bm_1bpp_0, 2, 4);
+    BUTTON_SetBitmapEx(hButton, 1, &bm_1bpp_0, 2, 4);
+    if (!_Wait(45)) break;
+    BUTTON_SetBitmapEx(hButton, 0, &bm_1bpp_2, 2, 4);
+    BUTTON_SetBitmapEx(hButton, 1, &bm_1bpp_2, 2, 4);
+    if (!_Wait(50)) break;
+    BUTTON_SetBitmapEx(hButton, 0, &bm_1bpp_0, 2, 4);
+    BUTTON_SetBitmapEx(hButton, 1, &bm_1bpp_0, 2, 4);
+    if (!_Wait(45)) break;
+  }
+  BUTTON_SetBitmapEx(hButton, 0, &bm_1bpp_1, 2, 4);
+  BUTTON_SetBitmapEx(hButton, 1, &bm_1bpp_1, 2, 4);
+  GUI_ClearRect(0, 80, 319, 120);
+  GUI_DispStringHCenterAt("You have answered the telephone", 160, 145);
+  GUI_Delay(2000);
   //
-  // Delete the button
+  // Delete button object
   //
   WM_DeleteWindow(hButton);
   GUI_ClearRect(0, 50, 319, 239);
-  GUI_Delay(1000);
+  GUI_Delay(400);
 }
+
 
 #define RECOMMENDED_MEMORY (1024L * 5)
 
@@ -99,89 +264,11 @@ int main(void)
      GUI_Clear();
      GUI_SetColor(GUI_WHITE);
      GUI_SetFont(&GUI_Font24_ASCII);
-     GUI_DispStringHCenterAt("WIDGET_SimpleButton - Sample", 160, 5);
+     GUI_DispStringHCenterAt("WIDGET_PhoneButton - Sample", 160, 5);
      while (1) {
        _DemoButton();
      }
-//
-//    uint32_t colors[25] = {GUI_BLUE,GUI_GREEN,GUI_RED, GUI_CYAN,GUI_MAGENTA,GUI_YELLOW,
-//    					   GUI_LIGHTBLUE,GUI_LIGHTGREEN,GUI_LIGHTRED,GUI_LIGHTCYAN, GUI_LIGHTMAGENTA,
-//						   GUI_LIGHTYELLOW,GUI_DARKBLUE,GUI_DARKGREEN,GUI_DARKRED,GUI_DARKCYAN,
-//						   GUI_DARKMAGENTA,GUI_DARKYELLOW,GUI_WHITE,GUI_LIGHTGRAY,GUI_GRAY,
-//						   GUI_DARKGRAY,GUI_BLACK,GUI_BROWN,GUI_ORANGE};
-//
-//
-//    struct Rectangle rect = {50,50,150,100};
-//    GUI_SetColor(GUI_GREEN);
-//    GUI_DrawRect(rect.x,rect.y,rect.x+rect.width,rect.y+rect.height);
-//
-//    uint8_t first_response;
-//    uint32_t last_x = rect.x+15;
-//    uint32_t last_y = rect.y+15;
-//    uint32_t touch_offset_x;
-//    uint32_t touch_offset_y;
-//    int delta;
-//
-//	for(;;){
-//        HAL_Delay(100);
-//		if(TS_IsPressed()){
-//            TS_StartRead();
-//			int16_t x = TS_GetX(3);//  average a few reads, since quick taps tend to make a bogus read initially
-//			int16_t y = TS_GetY(3);
-//			TS_SetIdle();
-//			TS_EndRead();
-//
-//			if( x > 0 && y > 0){ // if valid coordinate reads
-//				if(InRect(x,y,&rect)){
-//                    if(first_response){
-////                      GUI_SetColor(GUI_BLACK);
-////                      GUI_FillRect(1,1,318,238);
-//                    	LCD_FillScreen2(0);
-//                    	GUI_SetColor(GUI_WHITE);
-//                    	GUI_DrawRect(0,0,319,239);
-//                      touch_offset_x = x-rect.x;
-//                      touch_offset_y = y-rect.y;
-//                      first_response = 0;
-//                    }else{
-//                    	// it's movement
-//                    	delta = last_x - x;
-//                    }
-//					// erase old rect and crosshairs
-//					GUI_SetColor(GUI_BLACK);
-//					GUI_DrawRect(rect.x,rect.y,rect.x+rect.width,rect.y+rect.height);
-//					GUI_DrawHLine(last_y,rect.x,rect.x+rect.width);
-//					GUI_DrawVLine(last_x,rect.y,rect.y+rect.height);
-//
-//					if((int)x - (int)touch_offset_x <= 0){
-//						rect.x=1;
-//					}else if( (int)x-(int)touch_offset_x+rect.width >=318){
-//						rect.x = 319-rect.width-1;
-//					}else{
-//						rect.x = x-touch_offset_x;
-//					}
-//
-//					if((int)y - (int)touch_offset_y <= 0){
-//						rect.y=1;
-//					}else if( (int)y-(int)touch_offset_y+rect.height >= 238){
-//						rect.y = 239-rect.height-1;
-//					}else{
-//                        rect.y = y-touch_offset_y;
-//					}
-//					GUI_SetColor(GUI_GREEN);
-//					GUI_DrawRect(rect.x,rect.y,rect.x+rect.width,rect.y+rect.height);
-//
-//					GUI_SetColor(GUI_RED);
-//					GUI_DrawHLine(y,rect.x,rect.x+rect.width);
-//					GUI_DrawVLine(x,rect.y,rect.y+rect.height);
-//				}
-//				last_x = x;
-//				last_y = y;
-//				printf("X=%d Y=%d\r\n", x,y);
-//            }
-//		}else{
-//			first_response = 1;
-//		}
-//	}
+
 }
 
 
