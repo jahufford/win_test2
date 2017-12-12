@@ -54,13 +54,16 @@ static int _Color;
 static int _Font;
 static int _Pressed;
 
+#define BW 90
+#define BH 40
+
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
-  { FRAMEWIN_CreateIndirect, "Round button sample", 0,      50,  60, 200, 120, FRAMEWIN_CF_MOVEABLE },
-  { BUTTON_CreateIndirect,   "Button",   GUI_ID_BUTTON0,   100,  10,  80,  80 },
-  { BUTTON_CreateIndirect,   "Callback", GUI_ID_BUTTON1,    10,  10,  60,  20 },
-  { BUTTON_CreateIndirect,   "Font",     GUI_ID_BUTTON2,    10,  30,  60,  20 },
-  { BUTTON_CreateIndirect,   "Color",    GUI_ID_BUTTON3,    10,  50,  60,  20 },
-  { BUTTON_CreateIndirect,   "Cancel",   GUI_ID_CANCEL,     10,  70,  60,  20 }
+  { FRAMEWIN_CreateIndirect, "Round button sample", 0,      20,  20, 240, 205, FRAMEWIN_CF_MOVEABLE },
+  { BUTTON_CreateIndirect,   "Button",   GUI_ID_BUTTON0,   115,  30,  110,  110 },
+  { BUTTON_CreateIndirect,   "Callback", GUI_ID_BUTTON1,    10,  5,  BW,  BH },
+  { BUTTON_CreateIndirect,   "Font",     GUI_ID_BUTTON2,    10,  5+BH+3,  BW,  BH },
+  { BUTTON_CreateIndirect,   "Color",    GUI_ID_BUTTON3,    10,  5+2*BH+2*3,  BW,  BH },
+  { BUTTON_CreateIndirect,   "Cancel",   GUI_ID_CANCEL,     10,  5+3*BH+3*3,  BW,  BH }
 };
 
 /*********************************************************************
@@ -165,6 +168,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     case WM_INIT_DIALOG:
       hButton = WM_GetDialogItem(hDlg, GUI_ID_BUTTON0);
       WM_SetHasTrans(hButton);              // Set transparency flag for button
+
       break;
     case WM_KEY:
       switch (((WM_KEY_INFO *)(pMsg->Data.p))->Key) {
