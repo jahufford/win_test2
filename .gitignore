@@ -17,7 +17,8 @@ code/Middlewares/ST
 *.bin
 *.d
 *.lib
-
+*.list
+*.mk
 
 # Packages #
 ############
