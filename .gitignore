@@ -1,7 +1,7 @@
-*.a
 code/Middlewares/Third_Party/LibJPEG
 code/Middlewares/ST
 
+*.pdf
 
 # Compiled source #
 ###################
@@ -9,12 +9,17 @@ code/Middlewares/ST
 *.class
 *.dll
 *.exe
+*.a
 *.o
 *.so
 *.bin
 *.elf
-*.xml
 *.map
+*.bin
+*.d
+*.lib
+*.list
+*.mk
 
 # Packages #
 ############
@@ -44,4 +49,7 @@ code/Middlewares/ST
 .Trashes
 ehthumbs.db
 Thumbs.db
+Debug/
+Debug/*.*
 /Debug/
+*.chm
