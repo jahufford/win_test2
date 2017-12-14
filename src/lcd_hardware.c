@@ -104,6 +104,11 @@ void LCD_WriteWord(uint16_t data)
 		Error_Handler();
     }
 }
+
+void LCD_ReadDataMultiple(U16 * pData, int NumItems)
+{
+
+}
 void LCD_HardwareInit(void)
 {
 	__HAL_RCC_GPIOA_CLK_ENABLE();
