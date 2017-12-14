@@ -110,9 +110,9 @@ uint8_t TS_HardwareInit()
     HAL_TIM_Base_Init(&h_touchpressed_ticker);
     h_touchpressed_ticker.Instance->DIER |= 1;
 	TIM5->SR &= ~TIM_SR_UIF;
-	NVIC_SetPriority(TIM5_IRQn, 1);
-    NVIC_ClearPendingIRQ(TIM5_IRQn);
-    NVIC_EnableIRQ(TIM5_IRQn);
+//	NVIC_SetPriority(TIM5_IRQn, 1);
+//    NVIC_ClearPendingIRQ(TIM5_IRQn);
+//    NVIC_EnableIRQ(TIM5_IRQn);
 
 	return 1;
 }

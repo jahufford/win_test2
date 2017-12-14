@@ -9338,7 +9338,7 @@ GUI_CONST_STORAGE GUI_FONT GUI_FontArabic24 = {
 *       Arabic and bidirectional text samples
 */
 static char * _apText[] = {
-  "\nBidirectional text\n\n\xd8\xb9\xd9\x84\xd8\xa7 1, 2, 345 \xd8\xba\xd9\x86\xd9\x8a XYZ \xd8\xa3\xd9\x86\xd8\xa7",
+  "\nBidirectional text\n\n\xd8\xb2\xd8\xa8   \xd9\x84\xd8\xa7 1, 2, 345 \xd8\xba\xd9\x86\xd9\x8a XYZ \xd8\xa3\xd9\x86\xd8\xa7",
   "\nBeautiful\n\n\xd8\xac\xd9\x80\xd9\x85\xd9\x8a\xd9\x84",
   "\nI'm from Lebanon.\n\n\xd8\xa3\xd9\x86\xd8\xa7 \xd9\x85\xd9\x86 \xd9\x84\xd8\xa8\xd9\x86\xd8\xa7\xd9\x86",
   "\nI'm from Canada.\n\n\xd8\xa3\xd9\x86\xd8\xa7 \xd9\x85\xd9\x86 \xd9\x83\xd9\x86\xd8\xaf\xd8\xa7",
@@ -9381,24 +9381,38 @@ static void _ShowArabicTextSamples(void) {
 */
 static void _DemoButton(void) {
   BUTTON_Handle hButton;
+  GUI_RECT Rect = {40, 60, 279, 199};
 
   GUI_SetFont(&GUI_Font24_ASCII);
-  GUI_DispStringHCenterAt("Click on button...", 160, 90);
+  //GUI_DispStringHCenterAt("Click on button...", 160, 90);
   //
   // Create the button and set text
   //
-  hButton = BUTTON_Create(110, 110, 200, 100, GUI_ID_OK, WM_CF_SHOW);
-  BUTTON_SetText(hButton, "Click me...");
+  int button_x =(312-125)/2;
+  int button_y =(240-50)/2;
+
+  hButton = BUTTON_Create(button_x, button_y, 125, 50, GUI_ID_OK, WM_CF_SHOW);
+  BUTTON_SetFont(hButton, &GUI_Font24_ASCII);
+  BUTTON_SetText(hButton, "Push Me");
   //
   // Let window manager handle the button
   //
   while (GUI_WaitKey() != GUI_ID_OK);
+  GUI_Delay(250);
   //
   // Delete the button
   //
   WM_DeleteWindow(hButton);
-  GUI_ClearRect(0, 50, 319, 239);
-  GUI_Delay(1000);
+  GUI_ClearRect(button_x, button_y, button_x+125, button_y+50);
+  GUI_SetFont(&GUI_FontArabic24); // Set Arabic font
+  GUI_SetColor(GUI_RED);
+  GUI_DrawRect(Rect.x0 - 1, Rect.y0 - 1, Rect.x1 + 1, Rect.y1 + 1);
+  GUI_SetColor(GUI_WHITE);
+  GUI_DispStringInRectWrap("\n\n\xd8\xb2\xd8\xa8!", &Rect, GUI_TA_HCENTER, GUI_WRAPMODE_WORD);
+  GUI_Delay(3000);
+  GUI_SetColor(GUI_BLACK);
+  GUI_DrawRect(Rect.x0 - 1, Rect.y0 - 1, Rect.x1 + 1, Rect.y1 + 1);
+  //GUI_ClearRect(button_x, button_y, button_x+125, button_y+50);
 }
 
 #define RECOMMENDED_MEMORY (1024L * 5)
@@ -9441,15 +9455,22 @@ int main(void)
        GUI_ErrorOut("Not enough memory available.");
        return 1;
      }
-     _ShowArabicTextSamples();
+     GUI_UC_SetEncodeUTF8(); // Enable UTF8 decoding
+     GUI_UC_EnableBIDI(1);   // Enable bidirectional text
+     //
+     // Lable the sample
+     //
+     GUI_SetFont(&GUI_Font24_ASCII);
+     //GUI_DispStringHCenterAt("Arabic language sample", 160, 5);
+    // _ShowArabicTextSamples();
 //     GUI_SetBkColor(GUI_BLACK);
 //     GUI_Clear();
 //     GUI_SetColor(GUI_WHITE);
 //     GUI_SetFont(&GUI_Font24_ASCII);
 //     GUI_DispStringHCenterAt("WIDGET_SimpleButton - Sample", 160, 5);
-//     while (1) {
-//       _DemoButton();
-//     }
+     while (1) {
+       _DemoButton();
+     }
 //
 //    uint32_t colors[25] = {GUI_BLUE,GUI_GREEN,GUI_RED, GUI_CYAN,GUI_MAGENTA,GUI_YELLOW,
 //    					   GUI_LIGHTBLUE,GUI_LIGHTGREEN,GUI_LIGHTRED,GUI_LIGHTCYAN, GUI_LIGHTMAGENTA,
