@@ -12,6 +12,7 @@
 
 extern SPI_HandleTypeDef  h_touchscreen_spi;
 extern uint8_t touchscreen_is_pressed;
+extern TIM_HandleTypeDef h_touchpressed_ticker;
 
 #define TOUCHSCREEN_SPI					 SPI2
 #define TOUCHSCREEN_IRQ_PIN              GPIO_PIN_7

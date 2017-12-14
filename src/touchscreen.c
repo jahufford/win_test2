@@ -11,6 +11,7 @@
 SPI_HandleTypeDef  h_touchscreen_spi;
 
 uint8_t touchscreen_is_pressed;
+TIM_HandleTypeDef h_touchpressed_ticker;
 
 // returns 1 on success, 0 on failure
 uint8_t TS_HardwareInit()
@@ -69,6 +70,7 @@ uint8_t TS_HardwareInit()
     reg |= (SYSCFG_EXTICR2_EXTI7_PA);
     SYSCFG->EXTICR[1] = reg;
     touchscreen_is_pressed = 0;
+    __HAL_GPIO_EXTI_CLEAR_IT(TOUCHSCREEN_IRQ_PIN);
     NVIC_SetPriority(EXTI9_5_IRQn, 1);
     NVIC_ClearPendingIRQ(EXTI9_5_IRQn);
     NVIC_EnableIRQ(EXTI9_5_IRQn);
@@ -95,6 +97,22 @@ uint8_t TS_HardwareInit()
     if(HAL_SPI_Init(&h_touchscreen_spi) != HAL_OK){
     	return 0;
     }
+
+    // set up movement timer and interrupt
+    __HAL_RCC_TIM5_CLK_ENABLE();
+    // set up a basic ticker
+    h_touchpressed_ticker.Instance = TIM5;
+    h_touchpressed_ticker.State = HAL_TIM_STATE_RESET;
+    h_touchpressed_ticker.Init.ClockDivision = 0;
+    h_touchpressed_ticker.Init.CounterMode = TIM_COUNTERMODE_UP;
+    h_touchpressed_ticker.Init.Period = 9000*10;
+    h_touchpressed_ticker.Init.Prescaler = 0;
+    HAL_TIM_Base_Init(&h_touchpressed_ticker);
+    h_touchpressed_ticker.Instance->DIER |= 1;
+	TIM5->SR &= ~TIM_SR_UIF;
+	NVIC_SetPriority(TIM5_IRQn, 1);
+    NVIC_ClearPendingIRQ(TIM5_IRQn);
+    NVIC_EnableIRQ(TIM5_IRQn);
 
 	return 1;
 }
